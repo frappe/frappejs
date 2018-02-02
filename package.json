@@ -18,6 +18,7 @@
     "node-fetch": "^1.7.3",
     "popper.js": "^1.12.9",
     "sqlite3": "^3.1.13",
+    "trumbowyg": "^2.9.4",
     "walk": "^2.3.9"
   },
   "repository": {
@@ -46,6 +47,7 @@
     "rollup-plugin-node-builtins": "^2.1.2",
     "rollup-plugin-node-resolve": "^3.0.2",
     "rollup-plugin-postcss": "^1.2.7",
-    "rollup-plugin-sass": "^0.5.3"
+    "rollup-plugin-sass": "^0.5.3",
+    "rollup-plugin-svg": "^1.0.1"
   }
 }

@@ -5,7 +5,8 @@ const control_classes = {
     Link: require('./link'),
     Float: require('./float'),
     Currency: require('./currency'),
-    Password: require('./password')
+    Password: require('./password'),
+    TextEditor: require('./text_editor')
 }
 
 module.exports = {

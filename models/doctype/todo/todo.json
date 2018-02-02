@@ -17,7 +17,7 @@
 		{
 			"fieldname": "description",
 			"label": "Description",
-			"fieldtype": "Text"
+			"fieldtype": "TextEditor"
 		},
 		{
 			"fieldname": "status",

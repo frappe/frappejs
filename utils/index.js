@@ -12,12 +12,20 @@ module.exports = {
     },
 
     slug(text) {
-        return text.toLowerCase().replace(/ /g, '_');
+        return this.camelify(text)
     },
 
     getRandomName() {
         return Math.random().toString(36).substr(3);
     },
+
+    camelify(str) {
+      return str.replace(/\W+(.)/g, function(match, chr)
+       {
+            return chr.toUpperCase();
+        });
+    },
+
 
     async sleep(seconds) {
         return new Promise(resolve => {

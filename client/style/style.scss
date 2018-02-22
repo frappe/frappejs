@@ -1,9 +1,9 @@
-@import "node_modules/bootstrap/scss/bootstrap";
-@import "node_modules/awesomplete/awesomplete";
-@import "node_modules/flatpickr/dist/flatpickr";
-@import "node_modules/flatpickr/dist/themes/airbnb";
-@import "node_modules/codemirror/lib/codemirror";
-// @import "node_modules/codemirror/theme/cobalt";
+@import "~frappe-datatable/dist/frappe-datatable";
+@import "~bootstrap/scss/bootstrap";
+@import "~awesomplete/awesomplete";
+@import "~flatpickr/dist/flatpickr";
+@import "~flatpickr/dist/themes/airbnb";
+@import "~codemirror/lib/codemirror";
 
 $spacer-1: 0.25rem;
 $spacer-2: 0.5rem;

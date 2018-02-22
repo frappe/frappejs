@@ -1,8 +1,11 @@
+require('./style/style.scss')
+
 const common = require('frappejs/common');
 const HTTPClient = require('frappejs/backends/http');
 const frappe = require('frappejs');
 frappe.ui = require('./ui');
 const Desk = require('./desk');
+const io = require('socket.io-client');
 
 module.exports = {
     async start({server, columns = 2}) {

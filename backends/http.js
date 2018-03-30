@@ -23,6 +23,7 @@ module.exports = class HTTPClient extends Observable {
         let url = this.getURL('/api/resource', doctype);
         return await this.fetch(url, {
             method: 'POST',
+            credentials: 'same-origin',
             body: JSON.stringify(doc)
         })
     }
@@ -31,6 +32,7 @@ module.exports = class HTTPClient extends Observable {
         let url = this.getURL('/api/resource', doctype, name);
         return await this.fetch(url, {
             method: 'GET',
+            credentials: 'same-origin',
             headers: this.getHeaders()
         })
     }
@@ -49,6 +51,7 @@ module.exports = class HTTPClient extends Observable {
 
         return await this.fetch(url, {
             method: 'GET',
+            credentials: 'same-origin',
         });
     }
 
@@ -58,6 +61,7 @@ module.exports = class HTTPClient extends Observable {
 
         return await this.fetch(url, {
             method: 'PUT',
+            credentials: 'same-origin',
             body: JSON.stringify(doc)
         });
     }
@@ -67,6 +71,7 @@ module.exports = class HTTPClient extends Observable {
 
         return await this.fetch(url, {
             method: 'DELETE',
+            credentials: 'same-origin',
         });
     }
 
@@ -75,6 +80,7 @@ module.exports = class HTTPClient extends Observable {
 
         return await this.fetch(url, {
             method: 'DELETE',
+            credentials: 'same-origin',
             body: JSON.stringify(names)
         });
     }
@@ -88,6 +94,7 @@ module.exports = class HTTPClient extends Observable {
 
         return (await this.fetch(url, {
             method: 'GET',
+            credentials: 'same-origin',
         })).value;
     }
 

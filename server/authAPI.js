@@ -14,7 +14,7 @@ const login = require('frappejs/utils/session');
 module.exports = {
     async setup(app, config=null) {
         this.setupFrappeApp(app, config);
-        this.setupTemplating(app);
+        this.setupTemplating(app, config);
         app.use(cookieParser(config.session.cookieSecret));
         app.use(bodyParser.json({ extended: false }));
         app.use(bodyParser.urlencoded({ extended: false }));
@@ -42,8 +42,8 @@ module.exports = {
         app.all("/api/resource/*", routes.site.generalRoute);
     },
 
-    setupTemplating(app){
-        const nunjucksEnv = nunjucks.configure(path.resolve(__dirname, '../'), {
+    setupTemplating(app, config){
+        const nunjucksEnv = nunjucks.configure([path.resolve(__dirname, '../'), config.templateDir], {
             express: app
         });
 

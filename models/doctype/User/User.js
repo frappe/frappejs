@@ -10,12 +10,18 @@ module.exports = {
     "fields": [
         {
             "fieldname": "name",
-            "label": "Name",
+            "label": "Username",
             "fieldtype": "Data",
             "required": 1
         },
         {
-            "fieldname": "full_name",
+            "fieldname": "password",
+            "label": "Password",
+            "fieldtype": "Password",
+            "required": 1
+        },
+        {
+            "fieldname": "fullName",
             "label": "Full Name",
             "fieldtype": "Data",
             "required": 1
@@ -25,6 +31,12 @@ module.exports = {
             "label": "Roles",
             "fieldtype": "Table",
             "childtype": "UserRole"
+        },
+        {
+            "fieldname": "userId",
+            "label": "User ID",
+            "fieldtype": "Data",
+            "hidden": 1
         }
     ]
 }

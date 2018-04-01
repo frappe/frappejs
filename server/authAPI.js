@@ -26,7 +26,8 @@ module.exports = {
         // Passport configuration
         require('./auth');
 
-        app.get('/', routes.site.generalRoute);
+        app.get('/', (request, response) => response.redirect('/app'));
+        app.get('/app', login.ensureLoggedIn(), (req, res)=> res.render('./www/app'));
         app.get('/login', routes.site.loginForm);
         app.post('/login', routes.site.login);
         app.get('/logout', routes.site.logout);

@@ -302,6 +302,30 @@ exports.token = [
   server.errorHandler(),
 ];
 
+exports.revoke = async(req, res, next) => {
+  if (req.query && !req.query.token){
+    res.send("Supply token to be revoked")
+  } else {
+    let bearerToken = await frappe.db.getAll({
+      doctype: 'Session',
+      filters: {accessToken: req.query.token},
+      limit: 1
+    });
+    if (bearerToken.length > 0){
+      bearerToken = bearerToken[0];
+    } else {
+      res.send("Invalid token");
+    }
+
+    try {
+      await frappe.db.delete('Session', bearerToken.name);
+      res.send("Bearer Token Revoked");
+    } catch (error) {
+      res.send(error);
+    }
+  }
+}
+
 function mapOAuthClient(client){
   return {
     id: client.name,

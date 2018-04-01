@@ -36,6 +36,7 @@ module.exports = {
         app.get('/dialog/authorize', routes.oauth2.authorization);
         app.post('/dialog/authorize/decision', routes.oauth2.decision);
         app.post('/oauth/token', routes.oauth2.token);
+        app.post('/oauth/revoke', routes.oauth2.revoke);
 
         app.get('/api/userinfo', routes.user.info);
         app.get('/api/clientinfo', routes.client.info);

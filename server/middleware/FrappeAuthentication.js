@@ -23,13 +23,14 @@ class FrappeAuthentication extends Strategy {
     let username = req.body.username, 
         password = req.body.password
     var self = this;
-    
+
     function verified(err, user, info) {
-      if (err) { return self.redirect(options.failureRedirect || '/login'); }
-      if (!user) { return self.redirect(options.failureRedirect || '/login'); }
+      if (err || !user) {
+        return self.redirect(options.failureRedirect || '/login');
+      }
       self.success(user, info);
     }
-    
+
     try {
       if (self._passReqToCallback) {
         this._verify(req, username, password, verified);

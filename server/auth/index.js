@@ -164,9 +164,25 @@ passport.use(new FrappeAuthentication({passReqToCallback:true},
       let user = createUserFromDocType(await frappe.db.get('User', req.session.passport.user));
       frappe.session.user = user.username;
       verified(null, user);
-    } else if (req.headers.authorization && /^Bearer$/i.test(req.headers.authorization)){
+    } else if (req.headers.authorization && req.headers.authorization.split(" ")[0].toLowerCase() == "bearer"){
       // Bearer Token
+      let accessToken = req.headers.authorization.split(" ")[1];
+      let session = await frappe.db.getAll({
+        doctype:'Session',
+        filters: {accessToken:accessToken},
+        limit: 1,
+        fields: ["name", "username"]
+      });
+      if (session.length == 1) {
+        session = session[0];
+        let user = createUserFromDocType(await frappe.db.get('User', session.username));
+        frappe.session.user = user.username;
+        verified(null, user);
+      } else {
+        verified(new Error("Invalid Access Token"));
+      }
     } else {
+      // delete guest session
       verified(new Error("Error Frappe Authentication"));
     }
   }

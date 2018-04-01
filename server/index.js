@@ -8,6 +8,7 @@ const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const frappe = require('frappejs');
 const restAPI = require('./restAPI');
+const authAPI = require('./authAPI');
 const frappeModels = require('frappejs/models');
 const common = require('frappejs/common');
 const bodyParser = require('body-parser');
@@ -18,7 +19,7 @@ require.extensions['.html'] = function (module, filename) {
 };
 
 module.exports = {
-    async start({backend, connectionParams, models, staticPath = './'}) {
+    async start({backend, connectionParams, models, staticPath = './', config = null}) {
         await this.init();
 
         if (models) {
@@ -37,6 +38,10 @@ module.exports = {
         io.on('connection', function (socket) {
             frappe.db.bindSocketServer(socket);
         });
+
+        // Authentication
+        if(config && config.enableLogin) authAPI.setup(app, config);
+
         // routes
         restAPI.setup(app);
 

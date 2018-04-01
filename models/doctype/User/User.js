@@ -5,7 +5,7 @@ module.exports = {
     "isChild": 0,
     "keywordFields": [
         "name",
-        "full_name"
+        "fullName"
     ],
     "fields": [
         {

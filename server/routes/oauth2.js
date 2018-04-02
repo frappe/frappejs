@@ -77,7 +77,7 @@ server.grant(oauth2orize.grant.token(async(client, user, ares, done) => {
   // set expiration time in ISO format
   let now = new Date();
 
-  now.setHours(now.getSeconds() + expiry);
+  now.setHours(now.getHours() + (expiry / 3600));
   let data = {
     doctype: 'Session',
     username: user.username,
@@ -130,7 +130,7 @@ server.exchange(oauth2orize.exchange.code(async(client, code, redirectUri, done)
     currentSession.doctype = 'Session';
     // set expiration time in ISO format
     let now = new Date();
-    now.setHours(now.getSeconds() + currentSession.expiry);
+    now.setHours(now.getHours() + (currentSession.expiry / 3600));
     currentSession.expirationTime = now.toISOString();
 
     // clear code for invalidating
@@ -169,7 +169,7 @@ server.exchange(oauth2orize.exchange.password((client, username, password, scope
       const token = utils.getUid(256);
 
       let now = new Date();
-      now.setHours(now.getSeconds() + expiry);
+      now.setHours(now.getHours() + (expiry / 3600));
       let data = {
         doctype: 'Session',
         username: user.name,
@@ -207,7 +207,7 @@ server.exchange(oauth2orize.exchange.refreshToken(function(client, refreshToken,
     if (success.length) {
       success = success[0];
       let now = new Date();
-      now.setHours(now.getSeconds() + expiry);
+      now.setHours(now.getHours() + (expiry / 3600));
       let currentSession = success;
       delete currentSession.name;
       currentSession.accessToken = utils.getUid(256);

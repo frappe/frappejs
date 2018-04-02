@@ -171,10 +171,15 @@ passport.use(new FrappeAuthentication({passReqToCallback:true},
         doctype:'Session',
         filters: {accessToken:accessToken},
         limit: 1,
-        fields: ["name", "username"]
+        fields: ["name", "username", "expirationTime"]
       });
-      if (session.length == 1) {
+      if (session.length == 1 ) {
         session = session[0];
+        let now = new Date();
+        let expirationTime = new Date(session.expirationTime);
+
+        // Check expired token
+        if (expirationTime < now) verified(new Error("Token Expired"))
         let user = createUserFromDocType(await frappe.db.get('User', session.username));
         frappe.session.user = user.username;
         verified(null, user);

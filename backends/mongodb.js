@@ -1,12 +1,11 @@
 const frappe = require('frappejs');
 const MongoClient = require('mongodb').MongoClient;
 const Logger = require('mongodb').Logger;
-const DocumentStore = require('./DocumentStore');
-const debug = false;
 const Observable = require('frappejs/utils/observable');
 
 module.exports = class MongodbDatabase extends Observable {
     constructor({ dbName, username, password, host, authSourceDb }) {
+        super();
         this.url = `mongodb://${username}:${password}@${host}/${dbName}?authMechanism=SCRAM-SHA-1&authSource=${authSourceDb}`;
     }
 
@@ -153,6 +152,11 @@ module.exports = class MongodbDatabase extends Observable {
 
     async insertOne(doctype, doc) {
         // insert into {doctype} ({fields}) values ({values})
+        let db = this.conn.db();
+        const collection = db.collection(doctype);
+        // Find some documents
+        await collection.insert(doc);
+        return collection;
     }
 
     async update(doctype, doc) {
@@ -303,8 +307,12 @@ module.exports = class MongodbDatabase extends Observable {
         return row.length ? row[0][fieldname] : null;
     }
 
-    getAll({ doctype, fields, filters, start, limit, order_by = 'modified', order = 'desc' } = {}) {
-        // select {fields} from {doctype} where {filters} order by {order_by} {order} limit {start} {limit}
+    async getAll({ doctype, fields, filters, start, limit, order_by = 'modified', order = 'desc' } = {}) {
+        let db = this.conn.db();
+        const collection = db.collection(doctype);
+        // Find some documents
+        let collections = await collection.find({}).toArray();
+        return collections;
     }
 
     getFilterConditions(filters) {
@@ -347,5 +355,9 @@ module.exports = class MongodbDatabase extends Observable {
 
     async commit() {
         // commit
+    }
+    
+    bindSocketServer(){
+
     }
 }

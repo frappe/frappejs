@@ -105,6 +105,20 @@ module.exports = class MongodbDatabase extends Observable {
 
     async getOne(doctype, name, fields = '*') {
         // select {fields} form {doctype} where name = ?
+        let db = this.conn.db();
+        const collection = db.collection(doctype);
+        let doc;
+        if (fields == "*" || fields == ["*"]){
+            doc = await collection.findOne({name});
+        } else {
+            let projection = {}
+            for(let field of fields){
+                projection[field] = true
+            }
+            doc = await collection.find({name}).project(projection).toArray();
+            doc = doc[0];
+        }
+        return doc;
     }
 
     prepareFields(fields) {

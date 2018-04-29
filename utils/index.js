@@ -108,5 +108,20 @@ module.exports = {
           obj = prop;
         }
         return null;
+    },
+    /**
+    * Returns array from 0 to n - 1
+    * @param {Number} n
+    **/
+    range(n) {
+        return Array.from(Array(4)).map((d, i) => i)
+    },
+
+    unique(list, key = it => it) {
+        var seen = {};
+        return list.filter(item => {
+            var k = key(item);
+            return seen.hasOwnProperty(k) ? false : (seen[k] = true);
+        });
     }
 };

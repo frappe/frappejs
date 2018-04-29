@@ -13,6 +13,7 @@ const frappeModels = require('frappejs/models');
 const common = require('frappejs/common');
 const bodyParser = require('body-parser');
 const fs = require('fs');
+const { setupExpressRoute: setRouteForPDF } = require('frappejs/server/pdf');
 
 require.extensions['.html'] = function (module, filename) {
     module.exports = fs.readFileSync(filename, 'utf8');
@@ -46,10 +47,12 @@ module.exports = {
         restAPI.setup(app);
 
         // listen
+        server.listen(frappe.config.port);
+
         frappe.app = app;
         frappe.server = server;
 
-        server.listen(frappe.config.port);
+        setRouteForPDF();
     },
 
     async init() {
@@ -57,6 +60,7 @@ module.exports = {
         await frappe.init();
         frappe.registerModels(frappeModels, 'server');
         frappe.registerLibs(common);
+
         await frappe.login();
     },
 

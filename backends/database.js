@@ -162,7 +162,7 @@ module.exports = class Database extends Observable {
                 doctype: field.childtype,
                 fields: ["*"],
                 filters: { parent: doc.name },
-                order_by: 'idx',
+                orderBy: 'idx',
                 order: 'asc'
             });
         }
@@ -173,7 +173,7 @@ module.exports = class Database extends Observable {
             doctype: 'SingleValue',
             fields: ['fieldname', 'value'],
             filters: { parent: doctype },
-            order_by: 'fieldname',
+            orderBy: 'fieldname',
             order: 'asc'
         });
         let doc = {};
@@ -376,43 +376,80 @@ module.exports = class Database extends Observable {
             filters: filters,
             start: 0,
             limit: 1,
-            order_by: 'name',
+            orderBy: 'name',
             order: 'asc'
         });
         return row.length ? row[0][fieldname] : null;
     }
 
-    getAll({ doctype, fields, filters, start, limit, order_by = 'modified', order = 'desc' } = {}) {
-        // select {fields} from {doctype} where {filters} order by {order_by} {order} limit {start} {limit}
+    getAll({ doctype, fields, filters, start, limit, orderBy = 'modified', order = 'desc' } = {}) {
+        // select {fields} from {doctype} where {filters} order by {orderBy} {order} limit {start} {limit}
     }
 
     getFilterConditions(filters) {
         // {"status": "Open"} => `status = "Open"`
+
         // {"status": "Open", "name": ["like", "apple%"]}
         // => `status="Open" and name like "apple%"
-        let conditions = [];
-        let values = [];
+
+        // {"date": [">=", "2017-09-09", "<=", "2017-11-01"]}
+        // => `date >= 2017-09-09 and date <= 2017-11-01`
+
+        let filtersArray = [];
+
         for (let key in filters) {
-            const value = filters[key];
-            if (value instanceof Array) {
-                const condition = value[0];
-                // if its like, we should add the wildcard "%" if the user has not added
-                if (condition.toLowerCase()==='includes') {
-                    condition = 'like';
+            let value = filters[key];
+            let field = key;
+            let operator = '=';
+            let comparisonValue = value;
+
+            if (Array.isArray(value)) {
+                operator = value[0];
+                comparisonValue = value[1];
+                operator = operator.toLowerCase();
+
+                if (operator === 'includes') {
+                    operator = 'like';
                 }
-                if (['like', 'includes'].includes(condition.toLowerCase()) && !value[1].includes('%')) {
-                    value[1] = `%${value[1]}%`;
+
+                if (['like', 'includes'].includes(operator) && !comparisonValue.includes('%')) {
+                    comparisonValue = `%${comparisonValue}%`;
                 }
-                conditions.push(`ifnull(${key}, '') ${condition} ?`);
-                values.push(value[1]);
-            } else {
-                conditions.push(`ifnull(${key}, '') = ?`);
-                values.push(value);
+            }
+
+            filtersArray.push([field, operator, comparisonValue]);
+
+            if (Array.isArray(value) && value.length > 2) {
+                // multiple conditions
+                let operator = value[2];
+                let comparisonValue = value[3];
+                filtersArray.push([field, operator, comparisonValue]);
             }
         }
+
+        let conditions = filtersArray.map(filter => {
+            const [field, operator, comparisonValue] = filter;
+
+            let placeholder = Array.isArray(comparisonValue) ?
+                comparisonValue.map(v => '?').join(', ') :
+                '?';
+
+            return `ifnull(${field}, '') ${operator} (${placeholder})`;
+        });
+
+        let values = filtersArray.reduce((acc, filter) => {
+            const comparisonValue = filter[2];
+            if (Array.isArray(comparisonValue)) {
+                acc = acc.concat(comparisonValue);
+            } else {
+                acc.push(comparisonValue);
+            }
+            return acc;
+        }, []);
+
         return {
             conditions: conditions.length ? conditions.join(" and ") : "",
-            values: values
+            values
         };
     }
 

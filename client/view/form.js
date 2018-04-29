@@ -11,7 +11,9 @@ module.exports = class BaseForm extends Observable {
         Object.assign(this, arguments[0]);
         this.links = [];
 
-        this.meta = frappe.getMeta(this.doctype);
+        if (!this.meta) {
+            this.meta = frappe.getMeta(this.doctype);
+        }
 
         if (this.setup) {
             this.setup();
@@ -204,7 +206,7 @@ module.exports = class BaseForm extends Observable {
     }
 
     refreshLinks(links) {
-        if (!this.container) return;
+        if (!(this.container && this.container.clearLinks)) return;
 
         this.container.clearLinks();
         for(let link of links) {
@@ -315,6 +317,7 @@ module.exports = class BaseForm extends Observable {
             this.refresh();
             this.trigger('change');
         } catch (e) {
+            console.error(e);
             frappe.ui.showAlert({message: frappe._('Failed'), color: 'red'});
             return;
         }

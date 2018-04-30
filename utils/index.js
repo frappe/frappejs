@@ -67,9 +67,52 @@ module.exports = {
     },
 
     /**
-     * Returns array from 0 to n - 1
-     * @param {Number} n
+     * Return a unique identifier with the given `len`.
+     *
+     * @param {Number} length
+     * @return {String}
+     * @api private
      */
+    getUid(length) {
+        let self = this;
+        let uid = '';
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const charsLength = chars.length;
+
+        for (let i = 0; i < length; ++i) {
+          uid += chars[self.getRandomInt(0, charsLength - 1)];
+        }
+
+        return uid;
+    },
+
+    /**
+     * Return a random int, used by `utils.getUid()`.
+     *
+     * @param {Number} min
+     * @param {Number} max
+     * @return {Number}
+     * @api private
+     */
+    getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    },
+
+    lookup(obj, field) {
+        if (!obj) { return null; }
+        var chain = field.split(']').join('').split('[');
+        for (var i = 0, len = chain.length; i < len; i++) {
+          var prop = obj[chain[i]];
+          if (typeof(prop) === 'undefined') { return null; }
+          if (typeof(prop) !== 'object') { return prop; }
+          obj = prop;
+        }
+        return null;
+    },
+    /**
+    * Returns array from 0 to n - 1
+    * @param {Number} n
+    **/
     range(n) {
         return Array.from(Array(4)).map((d, i) => i)
     },

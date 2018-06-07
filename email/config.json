@@ -7,16 +7,16 @@
 }
 
 {
-    "userMail" : "aakanksha.isp8buddy@gmail.com",
-    "receiverMail": "aakanksha.jain8@gmail.com",
-    "subjectText":"Wow it worked",
-    "contentText":"hahahhahaha",
+    "userMail" : "your_email",
+    "receiverMail": "receiver_email",
+    "subjectText":"",
+    "contentText":"",
     "_attachments":"",
     "receiverCC":"",
     "receiverBCC":"",
-    "userPassword":"isp82828",
-    "clientId_input":"923388861604-9vnclirkoi9t7nsijrrq7r6g2rvv88f5.apps.googleusercontent.com",
-    "clientSecret_input":"'JvdpRgDP2xRsudMJmE24LgVz'",
-    "refreshToken_input":"1/Bj5tAhN593rBsV8uYdVLVDZW8bUpvCOgeE43jYVdEaw"
+    "userPassword":"",
+    "clientId_input":"",
+    "clientSecret_input":"",
+    "refreshToken_input":""
 
 }   

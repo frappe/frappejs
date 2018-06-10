@@ -49,13 +49,13 @@ module.exports = {
             "fieldname": "emailAddress",
             "label": "cc",
             "fieldtype": "Data",
-            "required": 1
+            "required": 0
         },
         {
             "fieldname": "emailAddress",
             "label": "bcc",
             "fieldtype": "Data",
-            "required": 1
+            "required": 0
         },
         {
           "fieldname": "Subject",

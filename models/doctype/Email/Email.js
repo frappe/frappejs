@@ -16,7 +16,7 @@ module.exports = {
         },
         {
             "fieldname": "emailAddress",
-            "label": "Email Address",
+            "label": "from",
             "fieldtype": "Data",
             "required": 1
         },
@@ -38,6 +38,38 @@ module.exports = {
             "label": "Port",
             "fieldtype": "Int",
             "required": 1
-        }
+        },
+        {
+            "fieldname": "emailAddress",
+            "label": "to",
+            "fieldtype": "Data",
+            "required": 1
+        },
+        {
+            "fieldname": "emailAddress",
+            "label": "cc",
+            "fieldtype": "Data",
+            "required": 0
+        },
+        {
+            "fieldname": "emailAddress",
+            "label": "bcc",
+            "fieldtype": "Data",
+            "required": 0
+        },
+        {
+          "fieldname": "Subject",
+          "label": "Subject",
+          "fieldtype" : "Text",
+          "required": 0
+        },
+        { 
+          "fieldname": "Content",
+          "label": "",
+          "fieldtype" : "Text",
+          "required": 0
+        }         
+        
+     
     ]
 }

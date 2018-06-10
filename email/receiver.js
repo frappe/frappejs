@@ -17,25 +17,20 @@ imap.once('ready', function() {
       // test for May 28, 2018
       imap.search([ 'UNSEEN', ['SINCE', 'May 28, 2018'] ], function(err, results) {
         if (err) throw err;
-        var f = imap.fetch(results, { bodies: '' });
-        f.on('message', function(msg, seqno) {
-          console.log('Message #%d', seqno);
+        var fetch = imap.fetch(results, { bodies: '' });
+        fetch.on('message', function(msg, seqno) {
+          // console.log('Message #%d', seqno);
           var prefix = '(#' + seqno + ') ';
           msg.on('body', function(stream, info) {
-            console.log(prefix + 'Body');
+            // console.log(prefix + 'Body');
             stream.pipe(fs.createWriteStream('msg-' + seqno + '-body.txt'));
-          });
-          msg.once('attributes', function(attrs) {
-            console.log(prefix + 'Attributes: %s', inspect(attrs, false, 8));
-          });
-          msg.once('end', function() {
-            console.log(prefix + 'Finished');
+            // TODO : have to dump this in db
           });
         });
-        f.once('error', function(err) {
+        fetch.once('error', function(err) {
           console.log('Fetch error: ' + err);
         });
-        f.once('end', function() {
+        fetch.once('end', function() {
           console.log('Done fetching all messages!');
           imap.end();
         });

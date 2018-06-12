@@ -5,7 +5,7 @@ module.exports = {
     "isChild": 0,
     "keywordFields": [
         "name",
-        "emailAddress"
+        "from_emailAddress"
     ],
     "fields": [
         {
@@ -15,7 +15,7 @@ module.exports = {
             "required": 1
         },
         {
-            "fieldname": "emailAddress",
+            "fieldname": "from_emailAddress",
             "label": "from",
             "fieldtype": "Data",
             "required": 1
@@ -40,19 +40,19 @@ module.exports = {
             "required": 1
         },
         {
-            "fieldname": "emailAddress",
+            "fieldname": "to_emailAddress",
             "label": "to",
             "fieldtype": "Data",
             "required": 1
         },
         {
-            "fieldname": "emailAddress",
+            "fieldname": "cc_emailAddress",
             "label": "cc",
             "fieldtype": "Data",
             "required": 0
         },
         {
-            "fieldname": "emailAddress",
+            "fieldname": "bcc_emailAddress",
             "label": "bcc",
             "fieldtype": "Data",
             "required": 0
@@ -64,7 +64,7 @@ module.exports = {
           "required": 0
         },
         { 
-          "fieldname": "Content",
+          "fieldname": "Body",
           "label": "",
           "fieldtype" : "Text",
           "required": 0

@@ -13,6 +13,6 @@ module.exports = {
         User: require('./doctype/User/User.js'),
         UserRole: require('./doctype/UserRole/UserRole.js'),
         Email: require('./doctype/Email/Email.js'),
-        EmailList: require('./doctype/Email/EmailList.js')
+        EmailSummary: require('./doctype/EmailSummary/EmailSummary.js')
     }
 }

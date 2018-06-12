@@ -16,16 +16,16 @@ module.exports = {
         },
         {
             "fieldname": "from_emailAddress",
-            "label": "from",
+            "label": "Email",
             "fieldtype": "Data",
             "required": 1
         },
         {
             "fieldname": "password",
             "label": "Password",
-            "fieldtype": "Password",
+            "fieldtype": "Data",
             "required": 1,
-            "hidden": 1,
+            // "hidden": 1, uncomment when s: OAuth
         },
         {
             "fieldname": "host",
@@ -40,36 +40,24 @@ module.exports = {
             "required": 1
         },
         {
-            "fieldname": "to_emailAddress",
-            "label": "to",
+            "fieldname": "clientId",
+            "label": "Client Id",
             "fieldtype": "Data",
             "required": 1
         },
         {
-            "fieldname": "cc_emailAddress",
-            "label": "cc",
+            "fieldname": "clientSecret",
+            "label": "Client Secret",
             "fieldtype": "Data",
-            "required": 0
+            "required": 1
         },
         {
-            "fieldname": "bcc_emailAddress",
-            "label": "bcc",
+            "fieldname": "refreshToken",
+            "label": "Refresh Token",
             "fieldtype": "Data",
-            "required": 0
-        },
-        {
-          "fieldname": "Subject",
-          "label": "Subject",
-          "fieldtype" : "Text",
-          "required": 0
-        },
-        { 
-          "fieldname": "Body",
-          "label": "",
-          "fieldtype" : "Text",
-          "required": 0
-        }         
-        
-     
+            "required": 1
+        }
+    
     ]
 }
+

@@ -12,6 +12,7 @@ module.exports = {
         ToDo: require('./doctype/ToDo/ToDo.js'),
         User: require('./doctype/User/User.js'),
         UserRole: require('./doctype/UserRole/UserRole.js'),
-        Email: require('./doctype/Email/Email.js')
+        Email: require('./doctype/Email/Email.js'),
+        EmailList: require('./doctype/Email/EmailList.js')
     }
 }

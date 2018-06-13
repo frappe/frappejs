@@ -21,6 +21,18 @@ module.exports = {
             "required": 1
         },
         {
++            "fieldname": "cc_emailAddress",
++            "label": "cc",
++            "fieldtype": "Data",
++            "required": 0
++        },
++        {
++            "fieldname": "bcc_emailAddress",
++            "label": "bcc",
++            "fieldtype": "Data",
++            "required": 0
++        },
+        {
           "fieldname": "subject",
           "label": "Subject",
           "fieldtype" : "Text",

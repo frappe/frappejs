@@ -1,9 +1,10 @@
 module.exports = class WebRTC {
 
     constructor(){
-        this.type;
-        this.dataChannel;
-        this.roomName;
+        this.dataChannels = {};
+        this.connections = {};
+        this.masterNode;
+        this.clientNode;
         this.iceServers = {
             'iceServers': [{
                     'url': 'stun:stun.services.mozilla.com'
@@ -13,121 +14,220 @@ module.exports = class WebRTC {
                 }
             ]
         };
-        this.rtcPeerConnection = new RTCPeerConnection(this.iceServers);        
-    }
-
-    initConnection(roomName){
-        this.roomName = roomName;
-        this.createDataChannel();
-        this.onIceCandidate(this);
         this.setupSocketHandlers(this);
-        socket.emit('create or join', this.roomName);
     }
 
-    onIceCandidate(that){
-        this.rtcPeerConnection.onicecandidate = event => {
+    initConnection(masterID){
+        this.masterNode = masterID;
+        socket.emit('create', masterID);
+    }
+
+    setupSocketHandlers(that){
+        socket.on('giveID',function(id){
+            that.clientNode = id;
+            if (typeof that.getUniqueId === "function"){
+                that.getUniqueId(id);
+            }
+        });
+        
+        socket.on('created',function(creatorID){
+            console.log('to master');
+            that.setupConnection(creatorID);
+            socket.emit('join',creatorID);
+        });
+
+        socket.on('joined', function(masterID) {
+            console.log('to creator');
+            that.setupConnection(masterID);
+            socket.emit('ready',masterID);
+        });
+
+        socket.on('createOffer',function(creatorID){
+            that.createOffer(that,creatorID).then(offer => {
+                socket.emit('offer',{creatorID:creatorID, offer:offer});
+            });
+        });
+
+        socket.on('sendOffer',function(event) {
+            that.createAnswer(that,event.offer,event.id).then(answer => {
+                socket.emit('answer',{masterID:event.id, answer: answer});
+            });
+        });
+
+        socket.on('sendAnswer', function(event){
+            that.setHostRemote(event.answer,event.id);
+        });
+
+        socket.on('candidate', function (event) {
+            var candidate = new RTCIceCandidate({
+                sdpMLineIndex: event.event.label,
+                candidate: event.event.candidate
+            });
+            that.connections[event.id].addIceCandidate(candidate);
+        });
+    }
+
+    setupConnection(id){
+        this.connections[id] = new RTCPeerConnection(this.iceServers);
+        this.createDataChannel(id);
+        this.onIceCandidate(id);
+    }
+
+    onIceCandidate(socketID){
+        this.connections[socketID].onicecandidate = event => {
             if (event.candidate) {
                 socket.emit('candidate', {
                     label: event.candidate.sdpMLineIndex,
                     id: event.candidate.sdpMid,
                     candidate: event.candidate.candidate,
-                    room: that.roomName
+                    socketID: socketID
                 });
             }
         }
     }
 
-    setupSocketHandlers(that){
-        socket.on('created',function(){
-            that.type = 'host';
-        });
-
-        socket.on('joined', function(room) {
-            that.type = 'client';
-            socket.emit('ready',room);
-        });
-
-        socket.on('createOffer',function(room){
-            if(that.type=='host'){
-                that.createOffer(that).then(offer => {
-                    socket.emit('offer',{room:room, offer:offer});
-                });
-            }
-        });
-
-        socket.on('sendOffer',function(event) {
-            if(that.type=='client'){
-                that.createAnswer(that,event.offer).then(answer => {
-                    socket.emit('answer',{room:event.room, answer: answer});
-                });   
-            }
-        });
-
-        socket.on('sendAnswer', function(answer){
-            if(that.type=='host'){
-                that.setHostRemote(answer);
-            }
-        });
-
-        socket.on('candidate', function (event) {
-            var candidate = new RTCIceCandidate({
-                sdpMLineIndex: event.label,
-                candidate: event.candidate
-            });
-            that.rtcPeerConnection.addIceCandidate(candidate);
-        });
-    }
-
-    async createOffer(that) {
-        return await this.rtcPeerConnection.createOffer()
+    async createOffer(that,id) {
+        return await this.connections[id].createOffer()
         .then(desc => {
-            that.rtcPeerConnection.setLocalDescription(desc);
+            that.connections[id].setLocalDescription(desc);
             return desc;
         })
         .catch(e => console.log(e));
     }
 
-    async createAnswer(that,offer) {
-        this.rtcPeerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+    async createAnswer(that,offer,id) {
+        this.connections[id].setRemoteDescription(new RTCSessionDescription(offer));
     
-        return await this.rtcPeerConnection.createAnswer()
+        return await this.connections[id].createAnswer()
             .then(desc => {
-                that.rtcPeerConnection.setLocalDescription(desc);
+                that.connections[id].setLocalDescription(desc);
                 return desc;
             })
             .catch(e => console.log(e));
     }
 
-    setHostRemote(answer){
-        this.rtcPeerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+    setHostRemote(answer,id){
+        this.connections[id].setRemoteDescription(new RTCSessionDescription(answer));
     }
 
-    createDataChannel(){
-        this.dataChannel = this.rtcPeerConnection.createDataChannel("myDataChannel");
+    createDataChannel(id){
+        this.dataChannels[id] = this.connections[id].createDataChannel("myDataChannel");
     
-        this.dataChannel.onerror = function (error) {
+        this.dataChannels[id].onerror = function (error) {
             console.log("Data Channel Error:", error);
         };
         
-        this.dataChannel.onopen = function () {
+        this.dataChannels[id].onopen = function () {
             console.log("The Data Channel is Open");
         };
         
-        this.dataChannel.onclose = function () {
+        this.dataChannels[id].onclose = function () {
             console.log("The Data Channel is Closed");
         };
 
-        this.setupReceiver();
+        this.setupReceiver(id);
     }
 
-    setupReceiver(){
-        this.rtcPeerConnection.ondatachannel = event => {
+    setupReceiver(id){
+        this.connections[id].ondatachannel = event => {
             const receiveChannel = event.channel;
-            receiveChannel.onmessage = message => this.onDataReceive(message.data);
+            receiveChannel.onmessage = message => {
+                try{
+                    var data = JSON.parse(message.data);
+                }
+                catch(e){
+                    var data = message.data;
+                }                
+                console.log(message.data);
+                if(data.webrtcAuth){
+                    var payload = data.webrtcAuth;
+                    console.log(payload);
+                    if(payload.type === 'req'){
+                        this.verifyClient(payload.email, payload.password, payload.clientID);
+                    }
+                    else if(payload.type === 'res'){
+                        if(payload.allow){
+                            if(typeof this.onAccessResponse === 'function'){
+                                this.onAccessResponse(true);
+                            }
+                        }
+                        else{
+                            if(typeof this.onAccessResponse === 'function'){
+                                this.onAccessResponse(false);
+                            }
+                        }
+                    }
+                }
+                else{
+                    if(typeof this.onDataReceive === 'function'){
+                        this.onDataReceive(message.data);
+                    }
+                }
+            }
         }
     }
 
-    sendData(data){
-        this.dataChannel.send(data);
+    requestAccess(email,password){
+        var payload = JSON.stringify({
+            webrtcAuth:{
+                type: 'req',
+                email: email,
+                password: password,
+                clientID: this.clientNode
+            }
+        });
+
+        this.sendData(payload);
+    }
+
+    verifyClient(email, password, clientID){
+        var positive = JSON.stringify({
+            webrtcAuth:{
+                type: 'res',
+                allow: true 
+            }
+        });
+
+        var negative = JSON.stringify({
+            webrtcAuth:{
+                type: 'res',
+                allow: false 
+            }
+        });
+
+        if(email && password) {
+            frappe.session = {};
+            frappe.login(email, password).then(() => {
+                if (frappe.session.token) {
+                    this.sendData(positive, clientID);
+                }
+    
+                else{
+                    this.sendData(negative, clientID);
+                    delete this.connections[clientID];
+                    delete this.dataChannels[clientID];
+                }
+            }); 
+        }
+        else{
+            this.sendData(negative, clientID);
+            delete this.connections[clientID];
+            delete this.dataChannels[clientID];
+        }
+    }
+
+    addClient(email, username, password){
+        return frappe.signup(email, password, username).then(res => {
+            if (res.status && res.status !== 200) {
+                return false;
+            }
+            else{
+                return true;
+            }
+        });
+    }
+
+    sendData(data,receiver = this.masterNode){
+        this.dataChannels[receiver].send(data);
     }
 }

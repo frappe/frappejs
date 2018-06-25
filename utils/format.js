@@ -10,7 +10,11 @@ module.exports = {
         }
 
         if (field.fieldtype === 'Currency') {
+<<<<<<< HEAD
             value = numberFormat.formatNumber(value);
+=======
+            value = number_format.format_number(value);
+>>>>>>> Format code
 
         } else if (field.fieldtype === 'Text') {
             value = markdown.makeHtml(value || '');

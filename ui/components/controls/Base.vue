@@ -8,12 +8,11 @@ export default {
     },
     props: {
         docfield: Object,
-        value: [String, Number, Array, FileList],
+        value: [String, Number, Array],
         onlyInput: {
             type: Boolean,
             default: false
-        },
-        disabled: Boolean
+        }
     },
     computed: {
         id() {
@@ -71,8 +70,7 @@ export default {
                 type: 'text',
                 placeholder: '',
                 value: this.value,
-                required: this.docfield.required,
-                disabled: this.disabled
+                required: this.docfield.required
             }
         },
         getInputListeners() {
@@ -93,9 +91,6 @@ export default {
             const isValid = await this.validate(value);
             this.$refs.input.setCustomValidity(isValid === false ? 'error' : '');
             this.$emit('change', value);
-        },
-        getValueFromInput(e) {
-
         },
         validate() {
             return true;

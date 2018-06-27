@@ -3,7 +3,7 @@
             <list-actions
               :doctype="doctype"
               :showDelete="checkList.length"
-              @new="$emit('newDoc')"
+              @new="newDoc"
               @delete="deleteCheckedItems"
             />
             <ul class="list-group">
@@ -12,12 +12,8 @@
                     :isActive="doc.name === $route.params.name"
                     :isChecked="isChecked(doc.name)"
                     @clickItem="openForm(doc.name)"
-                    @checkItem="toggleCheck(doc.name)"
-                >
-                    <indicator v-if="hasIndicator" :color="getIndicatorColor(doc)" />
-                    <span class="d-inline-block ml-2">
-                        {{ doc[meta.titleField || 'name'] }}
-                    </span>
+                    @checkItem="toggleCheck(doc.name)">
+                    {{ doc[meta.titleField || 'name'] }}
                 </list-item>
             </ul>
         </div>
@@ -29,67 +25,48 @@ import ListItem from './ListItem';
 
 export default {
   name: 'List',
-  props: ['doctype'],
+  props: ['doctype', 'filters'],
   components: {
-    ListActions,
-    ListItem
+      ListActions,
+      ListItem
   },
   data() {
-    return {
-      data: [],
-      checkList: [],
-      activeItem: ''
-    };
+      return {
+        data: [],
+        checkList: [],
+        activeItem: ''
+      }
   },
   computed: {
-    meta() {
-      return frappe.getMeta(this.doctype);
-    },
-    hasIndicator() {
-      return Boolean(this.meta.indicators);
-    }
+      meta() {
+          return frappe.getMeta(this.doctype);
+      }
   },
   created() {
     frappe.db.on(`change:${this.doctype}`, () => {
       this.updateList();
     });
-    this.$root.$on('navbarSearch', this.updateList);
-    this.$root.$emit('newList');
   },
   mounted() {
     this.updateList();
   },
   methods: {
-    async updateList(query = null) {
-      let filters = null;
-      if (query) {
-        filters = {
-          keywords: ['like', query]
-        };
-      }
-
-      const indicatorField = this.hasIndicator
-        ? this.meta.indicators.key
-        : null;
-
-      const fields = [
-        'name',
-        indicatorField,
-        this.meta.titleField,
-        ...this.meta.keywordFields
-      ].filter(Boolean);
-
+    async newDoc() {
+        let doc = await frappe.getNewDoc(this.doctype);
+        this.$router.push(`/edit/${this.doctype}/${doc.name}`);
+    },
+    async updateList() {
       const data = await frappe.db.getAll({
         doctype: this.doctype,
-        fields,
-        filters: filters || null
+        fields: ['name', ...this.meta.keywordFields, this.meta.titleField],
+        filters: this.filters || null
       });
 
       this.data = data;
     },
     openForm(name) {
-      this.activeItem = name;
-      this.$emit('openForm', name);
+        this.activeItem = name;
+        this.$router.push(`/edit/${this.doctype}/${name}`);
     },
     async deleteCheckedItems() {
       await frappe.db.deleteMany(this.doctype, this.checkList);
@@ -97,34 +74,31 @@ export default {
     },
     toggleCheck(name) {
       if (this.checkList.includes(name)) {
-        this.checkList = this.checkList.filter(docname => docname !== name);
+          this.checkList = this.checkList.filter(docname => docname !== name);
       } else {
-        this.checkList = this.checkList.concat(name);
+          this.checkList = this.checkList.concat(name);
       }
     },
     isChecked(name) {
       return this.checkList.includes(name);
-    },
-    getIndicatorColor(doc) {
-      return this.meta.getIndicatorColor(doc);
     }
   }
-};
+}
 </script>
 <style lang="scss" scoped>
-@import '../../styles/variables';
+@import "../../styles/variables";
 
 .list-group-item {
-  border-left: none;
-  border-right: none;
-  border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
 }
 
 .list-group-item:first-child {
-  border-top: none;
+    border-top: none;
 }
 
 .list-group-item:not(.active):hover {
-  background-color: $light;
+    background-color: $light;
 }
 </style>

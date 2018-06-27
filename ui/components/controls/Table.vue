@@ -3,7 +3,6 @@
     <model-table
       :doctype="docfield.childtype"
       :rows="value"
-      :disabled="disabled"
       @update:rows="emitChange"
     />
   </div>

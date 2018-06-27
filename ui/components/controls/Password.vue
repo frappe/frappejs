@@ -10,8 +10,7 @@ export default {
         id: this.id,
         type: 'password',
         value: this.value,
-        required: this.docfield.required,
-        disabled: this.disabled
+        required: this.docfield.required
       };
     },
   }

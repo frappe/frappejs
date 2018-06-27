@@ -9,8 +9,7 @@ export default {
         getInputAttrs() {
             return {
                 id: this.id,
-                required: this.docfield.required,
-                disabled: this.disabled
+                required: this.docfield.required
             };
         },
         getInputChildren(h) {

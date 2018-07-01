@@ -60,5 +60,11 @@ module.exports = {
                 await form.doc.update();
             }
         }
-    ]
+    ],
+
+    listSettings: {
+        getFields(list) {
+            return ['subject']
+        }
+    }
 }

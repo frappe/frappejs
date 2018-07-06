@@ -69,7 +69,7 @@ module.exports = {
         }
 
         let url = `/api/method/${method}`;
-        let response = await fetch(url, {
+        let response = await this.fetch(url, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -201,7 +201,7 @@ module.exports = {
             return;
         }
 
-        let response = await fetch(this.getServerURL() + '/api/login', {
+        let response = await this.fetch(this.getServerURL() + '/api/login', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

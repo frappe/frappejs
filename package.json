@@ -33,6 +33,7 @@
     "mysql": "^2.15.0",
     "node-fetch": "^1.7.3",
     "node-sass": "^4.7.2",
+    "nodemailer": "^4.6.6",
     "nodemon": "^1.14.7",
     "nunjucks": "^3.1.0",
     "octicons": "^7.2.0",

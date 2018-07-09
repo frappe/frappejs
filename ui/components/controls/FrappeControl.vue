@@ -3,6 +3,7 @@
         :docfield="docfield"
         :value="value"
         :onlyInput="onlyInput"
+        v-if="!docfield.hidden"
         @change="$emit('change', $event)"
     />
 </template>

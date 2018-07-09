@@ -1,4 +1,4 @@
-const { BLUE, GREEN } = require('frappejs/ui/constants/indicators');
+const indicatorColor = require('frappejs/ui/constants/indicators');
 
 module.exports = {
   name: 'ToDo',
@@ -27,16 +27,18 @@ module.exports = {
       fieldtype: 'Data',
       required: 1
     },
-    {
-      fieldname: 'status',
-      label: 'Status',
-      fieldtype: 'Select',
-      options: [
-        'Open',
-        'Closed'
-      ],
-      default: 'Open',
-      required: 1
+    "isSingle": 0,
+    "keywordFields": [
+        "subject",
+        "description"
+    ],
+    titleField: 'subject',
+    indicators: {
+        key: 'status',
+        colors: {
+            Open: indicatorColor.BLUE,
+            Closed: indicatorColor.GREEN
+        }
     },
     {
       fieldname: 'description',

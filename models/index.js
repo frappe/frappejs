@@ -11,6 +11,6 @@ module.exports = {
         SystemSettings: require('./doctype/SystemSettings/SystemSettings.js'),
         ToDo: require('./doctype/ToDo/ToDo.js'),
         User: require('./doctype/User/User.js'),
-        UserRole: require('./doctype/UserRole/UserRole.js')
+        UserRole: require('./doctype/UserRole/UserRole.js'),
     }
 }

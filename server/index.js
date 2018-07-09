@@ -65,7 +65,6 @@ module.exports = {
         frappe.server = server;
 
         setRouteForPDF();
-        console.log("HEY THERE");
         setupEmail();
     },
 

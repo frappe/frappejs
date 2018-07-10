@@ -7,19 +7,11 @@ export default function installFormModal(Vue) {
       $formModal() {
         const open = (doc, options = {}) => {
           const { defaultValues = null, onClose = null } = options;
-          this.$modal.show({
-            component: Form,
-            props: {
-              doctype: doc.doctype,
-              name: doc.name,
-              defaultValues,
-            },
-            events: {
-              onClose
-            },
-            modalProps: {
-              noHeader: true
-            }
+          this.$modal.show(Form, {
+            doctype: doc.doctype,
+            name: doc.name,
+            defaultValues,
+            onClose
           });
         }
 

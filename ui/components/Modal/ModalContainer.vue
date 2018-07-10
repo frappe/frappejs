@@ -3,7 +3,7 @@
     <modal
       :key="modal.id"
       v-for="modal in modals"
-      v-bind="modal.modalProps"
+      v-bind="modal"
       @close-modal="onModalClose(modal.id)"
     ></modal>
     <div class="modal-backdrop show" v-show="modals.length"></div>
@@ -35,15 +35,13 @@ export default {
     });
   },
   methods: {
-    add({ component, props = {}, events = {}, modalProps = {} }) {
+    add(component, props, events) {
       this.currentId++;
       this.modals.push({
         id: this.currentId,
-        modalProps: Object.assign({}, modalProps, {
-          component,
-          props,
-          events
-        })
+        component,
+        props,
+        events
       });
       return this.currentId;
     },
@@ -57,7 +55,7 @@ export default {
     onModalClose(id) {
       if (id) {
         const modal = this.modals.find(modal => modal.id === id);
-        modal.modalProps.events.onClose && modal.modalProps.events.onClose();
+        modal.props.onClose && modal.props.onClose();
       }
       this.removeModal(id);
     }

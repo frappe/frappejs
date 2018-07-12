@@ -16,6 +16,7 @@ const fs = require('fs');
 const { setupExpressRoute: setRouteForPDF } = require('frappejs/server/pdf');
 const auth = require('./../auth/auth')();
 const morgan = require('morgan')
+const posRegister = require('./file');
 
 require.extensions['.html'] = function (module, filename) {
     module.exports = fs.readFileSync(filename, 'utf8');
@@ -64,6 +65,7 @@ module.exports = {
         frappe.server = server;
 
         setRouteForPDF();
+        posRegister();
     },
 
     async init() {

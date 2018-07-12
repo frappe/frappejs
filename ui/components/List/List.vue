@@ -11,7 +11,7 @@
                     :id="doc.name"
                     :isActive="doc.name === $route.params.name"
                     :isChecked="isChecked(doc.name)"
-                    @clickItem="openForm(doc.name)"
+                    @clickItem="reqOpenForm(doc.name)"
                     @checkItem="toggleCheck(doc.name)"
                 >
                     <indicator v-if="hasIndicator" :color="getIndicatorColor(doc)" />
@@ -29,7 +29,7 @@ import ListItem from './ListItem';
 
 export default {
   name: 'List',
-  props: ['doctype', 'filters'],
+  props: ['doctype', 'filters','newDoc'],
   components: {
     ListActions,
     ListItem
@@ -58,10 +58,6 @@ export default {
     this.updateList();
   },
   methods: {
-    async newDoc() {
-      let doc = await frappe.getNewDoc(this.doctype);
-      this.$router.push(`/edit/${this.doctype}/${doc.name}`);
-    },
     async updateList() {
       const indicatorField = this.hasIndicator ? this.meta.indicators.key : null;
       const fields = [
@@ -79,13 +75,14 @@ export default {
 
       this.data = data;
     },
-    openForm(name) {
+    reqOpenForm(name) {
       this.activeItem = name;
-      this.$router.push(`/edit/${this.doctype}/${name}`);
+      this.$emit("openForm",name);
     },
     async deleteCheckedItems() {
-      await frappe.db.deleteMany(this.doctype, this.checkList);
+      await frappe.db.deleteMany(this.doctype,this.checkList);
       this.checkList = [];
+      this.$emit('deleted',this.checkList);
     },
     toggleCheck(name) {
       if (this.checkList.includes(name)) {

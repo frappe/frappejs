@@ -5,7 +5,6 @@ const getConfig = require("./getConfig");
 
 module.exports = {
   sync: async () => {
-
     let account = await getConfig();
     let emailSyncOption = account[0].emailSync;
     var config = {
@@ -30,14 +29,14 @@ module.exports = {
           var fetch = imap.fetch(results, {
             bodies: ''
           });
-
           fetch.on('message', function (msg, seqno) {
             msg.on('body', function (stream, info) {
 
               simpleParser(stream)
                 .then(async function (mail_object) {
-                  const mail = await frappe.insert({
+                  await frappe.insert({
                     doctype: 'Email',
+                    // EDITS 
                     name: "Received from : " + mail_object.to.value[0].address + " " + mail_object.subject.slice(0, 10), // needs change : THINK 
                     fromEmailAddress: mail_object.from.value[0].address,
                     toEmailAddress: mail_object.to.value[0].address,

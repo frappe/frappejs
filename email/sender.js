@@ -3,10 +3,11 @@ const getConfig = require("./getConfig");
 
 module.exports = {
   'sendMail': async function (mailDetails) {
-    let account = await getConfig(mailDetails.fromEmailAddress);
+    let account = await getConfig();
     for (var i = 0; i < account.length; i++) {
       if (mailDetails.fromEmailAddress == account[i].email) {
-        var mailKey = "Sent to : " + mailDetails.toEmailAddress + " " + mailDetails.subject.slice(0, 10);  // needs change : THINK
+        // EDITS 
+        var mailKey = "Sent to : " + mailDetails.toEmailAddress + " " + mailDetails.subject.slice(0, 10);  
         mailDetails = {
           from: mailDetails.fromEmailAddress,
           to: mailDetails.toEmailAddress,

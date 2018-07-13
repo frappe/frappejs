@@ -23,7 +23,6 @@ function fileSaver(req){
             if (err) throw err;
         });
     });
-    return "File Upload Successfulls";
 }
 
 module.exports = setupFileMethods

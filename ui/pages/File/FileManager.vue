@@ -1,10 +1,10 @@
 <template>
     <div class="frappe-list-form row no-gutters">
         <div class="col-4 border-right">
-            <frappe-list :doctype="doctype" :filters="filters" :newDoc="openNewDoc" :key="doctype" @openForm="onOpenForm" />
+            <frappe-list :doctype="doctype" :filters="filters" :key="doctype" @newDoc="openNewDoc" @openForm="onOpenForm" />
         </div>
         <div v-if="name" class="col-8">
-            <frappe-form :key="doctype + name" :doctype="doctype" :name="name" />
+            <frappe-form v-if="name" :key="doctype + name" :doctype="doctype" :name="name" @save="onSave" />
             <div v-if="onload" style="text-align:center">
                 <img :src="source()">
             </div>
@@ -57,15 +57,15 @@ export default {
         },
         onSave(doc) {
              if (doc.name !== this.$route.params.name) {
-                this.$router.push(`/edit/${doc.doctype}/${doc.name}`);
+                this.$router.push(`/FileEdit/${doc.doctype}/${doc.name}`);
             }
         },
         onOpenForm(name) {
-            this.$router.push(`/Fedit/${this.doctype}/${name}`);
+            this.$router.push(`/FileEdit/${this.doctype}/${name}`);
         },
         async openNewDoc() {
             let doc = await frappe.getNewDoc(this.doctype);
-            this.$router.push(`/Fpick/FileContent`);
+            this.$router.push(`/FilePick/FileContent`);
         },
     }
 }

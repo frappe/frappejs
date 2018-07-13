@@ -3,7 +3,7 @@
             <list-actions
               :doctype="doctype"
               :showDelete="checkList.length"
-              @new="newDoc"
+              @new="$emit('newDoc')"
               @delete="deleteCheckedItems"
             />
             <ul class="list-group">
@@ -29,7 +29,7 @@ import ListItem from './ListItem';
 
 export default {
   name: 'List',
-  props: ['doctype', 'filters','newDoc'],
+  props: ['doctype', 'filters'],
   components: {
     ListActions,
     ListItem
@@ -81,8 +81,8 @@ export default {
     },
     async deleteCheckedItems() {
       await frappe.db.deleteMany(this.doctype,this.checkList);
-      this.checkList = [];
       this.$emit('deleted',this.checkList);
+      this.checkList = [];
     },
     toggleCheck(name) {
       if (this.checkList.includes(name)) {

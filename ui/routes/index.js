@@ -1,6 +1,6 @@
 import ListAndForm from '../pages/ListAndForm';
-import Fpick from '../pages/File/Fpick';
-import FListAndForm from '../pages/File/FListAndForm'
+import FilePick from '../pages/File/FilePick';
+import FileManager from '../pages/File/FileManager'
 
 export default [
   {
@@ -16,21 +16,21 @@ export default [
     props: true
   },
   {
-    path: '/Flist/:doctype',
+    path: '/FileList/:doctype',
     name: 'FileList',
-    component: FListAndForm,
+    component: FileManager,
     props: true
   },
   {
-    path: '/Fedit/:doctype/:name',
+    path: '/FileEdit/:doctype/:name',
     name: 'FileForm',
-    component: FListAndForm,
+    component: FileManager,
     props: true
   },
   {
-    path: '/fpick/:doctype',
+    path: '/FilePick/:doctype',
     name: 'FilePick',
-    component: Fpick,
+    component: FilePick,
     props: true
   }
 ];

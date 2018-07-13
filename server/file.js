@@ -1,8 +1,8 @@
 const frappe = require("frappejs")
-var formidable = require("formidable")
-var fs = require('fs');
+const formidable = require("formidable")
+const fs = require('fs');
 
-function posRegister(){
+function setupFileMethods(){
     frappe.registerFileMethod({
         method:'file_transfer',
         handler: args => fileSaver(args)
@@ -26,4 +26,4 @@ function fileSaver(req){
     return "File Upload Successfulls";
 }
 
-module.exports = posRegister
+module.exports = setupFileMethods

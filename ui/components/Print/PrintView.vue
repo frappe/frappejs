@@ -2,8 +2,6 @@
   <div class="print-view">
     <print-actions
       v-bind:title="name"
-      @view-form="viewForm"
-      @pdf="getPDF"
     ></print-actions>
     <div class="print-container">
       <div class="print-template" v-html="printTemplate"></div>
@@ -29,15 +27,6 @@ export default {
   async created(vm) {
     this.printTemplate = await getHTML(this.doctype, this.name);
   },
-  methods: {
-    viewForm() {
-      this.$router.push(`/edit/${this.doctype}/${this.name}`);
-    },
-
-    getPDF() {
-      frappe.getPDF(this.doctype, this.name);
-    }
-  }
 }
 </script>
 
@@ -45,7 +34,7 @@ export default {
 @import "../../styles/variables";
 
 .print-container {
-  padding: 1rem 5rem;
+  padding: 1rem;
 }
 
 .print-template {
@@ -53,5 +42,7 @@ export default {
   background-color: $white;
   box-shadow: 0rem 0rem 0.5rem rgba(0,0,0,0.2);
 }
+
+.print-view {}
 
 </style>

@@ -1,7 +1,7 @@
 <template>
     <div class="frappe-list-form row no-gutters">
         <div class="col-4 border-right">
-            <frappe-list :doctype="doctype" :filters="filters" :key="doctype" @newDoc="openNewDoc" @openForm="onOpenForm" />
+            <frappe-list :doctype="doctype" :key="doctype" @newDoc="openNewDoc" @openForm="onOpenForm" />
         </div>
         <div v-if="name" class="col-8">
             <frappe-form v-if="name" :key="doctype + name" :doctype="doctype" :name="name" @save="onSave" />
@@ -23,7 +23,7 @@ export default {
             lame:'-'
         }
     },
-    props: ['doctype', 'name', 'filters'],
+    props: ['doctype', 'name'],
     components: {
         FrappeList: List,
         FrappeForm: Form

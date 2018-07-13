@@ -22,6 +22,7 @@
     "eslint": "^4.19.1",
     "express": "^4.16.2",
     "flatpickr": "^4.3.2",
+    "formidable": "^1.2.1",
     "frappe-datatable": "^1.1.2",
     "jquery": "^3.3.1",
     "jwt-simple": "^0.5.1",

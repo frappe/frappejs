@@ -29,7 +29,7 @@ import ListItem from './ListItem';
 
 export default {
   name: 'List',
-  props: ['doctype', 'filters'],
+  props: ['doctype'],
   components: {
     ListActions,
     ListItem
@@ -53,12 +53,20 @@ export default {
     frappe.db.on(`change:${this.doctype}`, () => {
       this.updateList();
     });
+    this.$root.$on('navbarSearch', this.updateList);
+    this.$root.$emit('newList');
   },
   mounted() {
     this.updateList();
   },
   methods: {
-    async updateList() {
+    async updateList(query=null) {
+      let filters = null
+      if (query) {
+        filters = {
+          keywords : ['like', query]
+        }
+      }
       const indicatorField = this.hasIndicator ? this.meta.indicators.key : null;
       const fields = [
         'name',
@@ -70,7 +78,7 @@ export default {
       const data = await frappe.db.getAll({
         doctype: this.doctype,
         fields,
-        filters: this.filters || null
+        filters: filters || null
       });
 
       this.data = data;

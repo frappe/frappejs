@@ -1,25 +1,9 @@
-
 module.exports = {
-    validate: function (mailDetails) {
+    validate: function (email) {
         var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
-        if (reg.test(mailDetails.email) == false) {
+        if (reg.test(email) == false) {
             return false;
         }
         return true;
-    },
-    authValidate: async function (mailDetails) {
-        return new Promise((resolve,reject) => {
-            var Imap = require('imap');
-            var imap = new Imap({
-                user: mailDetails.email,
-                password: mailDetails.password,
-                host: mailDetails.imapHost,
-                port: mailDetails.imapPort,
-                tls: true
-            });
-            imap.once('ready',resolve);
-            imap.once('error',reject);
-            imap.connect();
-        })
     }
 }

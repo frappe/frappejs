@@ -1,6 +1,5 @@
 const sender = require('./sender');
 const receiver = require('./receiver');
-const validator = require('./validator');
 const frappe = require('frappejs');
 
 module.exports = () => {
@@ -14,12 +13,4 @@ module.exports = () => {
         handler: receiver.sync
     });
 
-    frappe.registerMethod({
-        method: 'validate-mail',
-        handler: validator.validate
-    });
-    frappe.registerMethod({
-        method: 'validate-auth',
-        handler: validator.authValidate
-    });
 };

@@ -4,17 +4,24 @@ const Imap = require('imap');
 const getConfig = require("./getConfig");
 
 module.exports = {
-  sync: async () => {
+  sync: async (email) => {
     let account = await getConfig();
-    let emailSyncOption = account[0].emailSync;
-    var config = {
-      "user": account[0].email,
-      "password": account[0].password,
-      "host": account[0].imapHost,
-      "port": account[0].imapPort,
-      "tls": true,
-  };
-  var imap = new Imap(config);
+    var i ;
+    for (i = 0; i < account.length; i++) {
+      if (account[i].email == email.Id) {
+        break;
+      }
+    }
+    let emailSyncOption = account[i].emailSync;
+        var config = {
+          "user": account[i].email,
+          "password": account[i].password,
+          "host": account[i].imapHost,
+          "port": account[i].imapPort,
+          "tls": true,
+        }
+    var imap = new Imap(config);
+
     function openInbox(cb) {
       imap.openBox('INBOX', true, cb);
     }
@@ -24,7 +31,7 @@ module.exports = {
       openInbox(function (err, box) {
 
         if (err) throw err;
-        imap.search([emailSyncOption, ['SINCE', account[0].initialDate]], function (err, results) {
+        imap.search([emailSyncOption, ['SINCE', account[i].initialDate]], function (err, results) {
           if (err) throw err;
           var fetch = imap.fetch(results, {
             bodies: ''

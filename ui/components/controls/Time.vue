@@ -1,39 +1,20 @@
-<template>
-  <div :class="{ 'form-group': !onlyInput }">
-    <label v-if="!onlyInput">{{ docfield.label }}</label>
-    <flat-pickr
-      :value="value"
-      :config="config"
-      class="form-control"
-      @on-change="emitChange"
-    >
-    </flat-pickr>
-  </div>
-</template>
 <script>
-import flatPickr from 'vue-flatpickr-component';
-import Data from './Data';
+import BaseDate from './BaseDate';
 
 export default {
-  extends: Data,
-  data() {
-    return {
-      config: {
+  extends: BaseDate,
+  props: {
+    config: {
+      type: Object,
+      default: () => ({
         enableTime: true,
         noCalendar: true
-      }
-    };
-  },
-  components: {
-    flatPickr
-  },
-  methods: {
-    emitChange(times, timeString) {
-      this.$emit('change', timeString);
+      })
     }
   }
 };
 </script>
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 <style lang="scss">
@@ -43,3 +24,5 @@ export default {
 >>>>>>> Time field added
 =======
 >>>>>>> Simplify template
+=======
+>>>>>>> Commonify Date and Time component into BaseDate component

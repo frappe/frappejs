@@ -88,8 +88,8 @@ export default {
       this.$emit("openForm",name);
     },
     async deleteCheckedItems() {
-      await frappe.db.deleteMany(this.doctype,this.checkList);
       this.$emit('deleted',this.checkList);
+      await frappe.db.deleteMany(this.doctype,this.checkList);
       this.checkList = [];
     },
     toggleCheck(name) {

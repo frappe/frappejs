@@ -1,7 +1,7 @@
 <template>
     <div class="frappe-list-form row no-gutters">
         <div class="col-4 border-right">
-            <frappe-list :doctype="doctype" :key="doctype" @newDoc="openNewDoc" @openForm="onOpenForm" />
+            <frappe-list :doctype="doctype" :key="doctype" @newDoc="openNewDoc" @openForm="onOpenForm" @deleted="onDeleteFile" />
         </div>
         <div v-if="name" class="col-8">
             <frappe-form v-if="name" :key="doctype + name" :doctype="doctype" :name="name" @save="onSave" />
@@ -14,6 +14,7 @@
 <script>
 import List from '../../components/List/List';
 import Form from '../../components/Form/Form';
+import frappe from 'frappejs';
 
 export default {
     data(){
@@ -67,6 +68,13 @@ export default {
             let doc = await frappe.getNewDoc(this.doctype);
             this.$router.push(`/FilePick/FileContent`);
         },
+        async onDeleteFile(checkList){
+            console.log(checkList);
+            await frappe.call({
+                method: 'file_delete',
+                args: checkList
+            });
+        }
     }
 }
 </script>

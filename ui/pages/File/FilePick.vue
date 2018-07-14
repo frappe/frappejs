@@ -1,7 +1,7 @@
 <template>
         <div class="frappe-list-form row no-gutters">
             <div class="col-4 border-right">
-                <frappe-list :doctype="doctype" :filters="filters" :newDoc="openNewDoc" :key="doctype" @openForm="onOpenForm" />
+                <frappe-list :doctype="doctype" :filters="filters" :newDoc="openNewDoc" :key="doctype" @openForm="onOpenForm" @deleted="onDeleteFile" />
             </div>
             <div class="col-8">
                 <div class="container">
@@ -61,6 +61,13 @@ export default {
         async openNewDoc() {
             let doc = await frappe.getNewDoc(this.doctype);
             this.$router.push(`/Fpick/FileContent`);
+        },
+        async onDeleteFile(checkList){
+            console.log(checkList);
+            await frappe.call({
+                method: 'file_delete',
+                args: checkList
+            });
         }
     }
 }

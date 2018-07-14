@@ -6,7 +6,10 @@ export default {
   props: {
     config: {
       type: Object,
-      default: () => ({})
+      default: () => ({
+        enableTime: true,
+        noCalendar: true
+      })
     }
   }
 };

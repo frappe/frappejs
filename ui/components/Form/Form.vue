@@ -1,21 +1,23 @@
 <template>
     <div class="frappe-form">
         <form-actions
+          class="p-3 border-bottom"
           v-if="shouldRenderForm"
           :doc="doc"
+          :links="links"
           @save="save"
           @submit="submit"
           @revert="revert"
+          @print="print"
         />
-        <div class="p-3">
-          <form-layout
-            v-if="shouldRenderForm"
-            :doc="doc"
-            :fields="meta.fields"
-            :layout="meta.layout"
-            :invalid="invalid"
-          />
-        </div>
+        <form-layout
+          class="p-3"
+          v-if="shouldRenderForm"
+          :doc="doc"
+          :fields="meta.fields"
+          :layout="meta.layout"
+          :invalid="invalid"
+        />
         <not-found v-if="notFound" />
     </div>
 </template>
@@ -37,8 +39,9 @@ export default {
       docLoaded: false,
       notFound: false,
       invalid: false,
-      invalidFields: []
-    }
+      invalidFields: [],
+      links: []
+    };
   },
   computed: {
     meta() {
@@ -67,9 +70,11 @@ export default {
       }
 
       this.docLoaded = true;
-    } catch(e) {
+    } catch (e) {
       this.notFound = true;
     }
+    this.setLinks();
+    this.doc.on('change', this.setLinks);
   },
   methods: {
     async save() {
@@ -91,6 +96,21 @@ export default {
       }
     },
 
+    setLinks() {
+      if (this.meta.links) {
+        let links = [];
+        for (let link of this.meta.links) {
+          if (link.condition(this)) {
+            link.handler = () => {
+              link.action(this);
+            };
+            links.push(link);
+          }
+        }
+        this.links = links;
+      }
+    },
+
     async submit() {
       this.doc.set('submitted', 1);
       await this.save();
@@ -101,11 +121,17 @@ export default {
       await this.save();
     },
 
+    print() {
+      this.$router.push(`/print/${this.doctype}/${this.name}`);
+    },
+
     onValidate(fieldname, isValid) {
       if (!isValid && !this.invalidFields.includes(fieldname)) {
         this.invalidFields.push(fieldname);
       } else if (isValid) {
-        this.invalidFields = this.invalidFields.filter(invalidField => invalidField !== fieldname)
+        this.invalidFields = this.invalidFields.filter(
+          invalidField => invalidField !== fieldname
+        );
       }
     },
 
@@ -113,7 +139,7 @@ export default {
       const form = this.$el.querySelector('form');
       let validity = form.checkValidity();
       this.invalid = !validity;
-    },
+    }
   }
 };
 </script>

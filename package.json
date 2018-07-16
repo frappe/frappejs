@@ -43,6 +43,7 @@
     "node-sass": "^4.7.2",
     "nunjucks": "^3.1.0",
     "octicons": "^7.2.0",
+    "os": "^0.1.1",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "puppeteer": "^1.2.0",

@@ -1,6 +1,7 @@
 <template>
     <div class="frappe-form">
         <form-actions
+          class="p-3 border-bottom"
           v-if="shouldRenderForm"
           :doc="doc"
           :links="links"
@@ -9,15 +10,14 @@
           @revert="revert"
           @print="print"
         />
-        <div class="p-3">
-          <form-layout
-            v-if="shouldRenderForm"
-            :doc="doc"
-            :fields="meta.fields"
-            :layout="meta.layout"
-            :invalid="invalid"
-          />
-        </div>
+        <form-layout
+          class="p-3"
+          v-if="shouldRenderForm"
+          :doc="doc"
+          :fields="meta.fields"
+          :layout="meta.layout"
+          :invalid="invalid"
+        />
         <not-found v-if="notFound" />
     </div>
 </template>
@@ -89,7 +89,7 @@ export default {
         }
 
         this.$emit('save', this.doc);
-        
+
       } catch (e) {
         console.error(e);
         return;

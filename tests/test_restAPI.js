@@ -15,11 +15,11 @@ describe('REST', () => {
             stdio: [process.stdin, process.stdout, process.stderr, 'pipe', 'pipe']
         });
 
-        await frappe.init();
-        await frappe.login();
-
         frappe.db = await new HTTPClient({server: 'localhost:8000'});
         frappe.fetch = fetch;
+
+        await frappe.init();
+        await frappe.login();
 
         // wait for server to start
         await frappe.sleep(1);

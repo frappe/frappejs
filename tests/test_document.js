@@ -76,7 +76,8 @@ describe('Document', () => {
         let user = frappe.newDoc({
             doctype: 'User',
             name: frappe.getRandomString(),
-            full_name: 'Test User',
+            fullName: 'Test User',
+            password: frappe.getRandomString(),
             roles: [
                 {
                     role: 'Test Role'

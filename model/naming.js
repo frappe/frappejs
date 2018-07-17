@@ -65,7 +65,7 @@ module.exports = {
             if (!e.status_code || e.status_code !== 404) {
                 throw e;
             }
-            await this.createNumberSeries(prefix);
+            series = await this.createNumberSeries(prefix);
         }
         let next = await series.next()
         return prefix + next;
@@ -81,6 +81,7 @@ module.exports = {
                 settingDoc.numberSeries = series.name;
                 await settingDoc.update();
             }
+            return series;
         }
     }
 }

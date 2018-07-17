@@ -204,16 +204,35 @@ module.exports = class sqliteDatabase extends Database {
             resolve(rows);
           }
         });
-    });
-  }
+    }
 
-  run(query, params) {
-    return new Promise((resolve, reject) => {
-      this.conn.run(query, params, (err) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
+    run(query, params) {
+        return new Promise((resolve, reject) => {
+            this.conn.run(query, params, (err) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
+    }
+
+    sql(query, params) {
+        return new Promise((resolve) => {
+            this.conn.all(query, params, (err, rows) => {
+                resolve(rows);
+            });
+        });
+    }
+
+    async commit() {
+        try {
+            await this.run('commit');
+        } catch (e) {
+            if (e.errno !== 1) {
+                throw e;
+            }
         }
       });
     });

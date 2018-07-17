@@ -7,9 +7,9 @@ const Observable = require('frappejs/utils/observable');
 const { getPDF } = require('frappejs/client/pdf');
 
 module.exports = {
-    async start({server, columns = 2, makeDesk = false}) {
+    async start({server, columns = 2, siblings = [], makeDesk = false}) {
         window.frappe = frappe;
-        frappe.init();
+        frappe.init(siblings);
         frappe.registerLibs(common);
         frappe.registerModels(require('frappejs/models'), 'client');
         frappe.fetch = window.fetch.bind();

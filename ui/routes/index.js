@@ -1,6 +1,7 @@
 import ListAndForm from '../pages/ListAndForm';
 import FilePick from '../pages/File/FilePick';
 import FileManager from '../pages/File/FileManager'
+import ListAndPrintView from '../pages/ListAndPrintView';
 
 export default [
   {
@@ -31,6 +32,12 @@ export default [
     path: '/FilePick/:doctype',
     name: 'FilePick',
     component: FilePick,
+    props: true
+  },
+  {
+    path: '/print/:doctype/:name',
+    name: 'PrintView',
+    component: ListAndPrintView,
     props: true
   }
 ];

@@ -1496,6 +1496,10 @@ flatpickr@^4.3.2:
   version "4.3.2"
   resolved "https://registry.yarnpkg.com/flatpickr/-/flatpickr-4.3.2.tgz#6a477043c075ef36c3ff54fadb49b936a64d635f"
 
+flatpickr@^4.4.6:
+  version "4.5.1"
+  resolved "https://registry.yarnpkg.com/flatpickr/-/flatpickr-4.5.1.tgz#f65eaf54c07538f87d6f68a67b03cf816d7fb82f"
+
 for-in@^1.0.1, for-in@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/for-in/-/for-in-1.0.2.tgz#81068d295a8142ec0ac726c6e2200c30fb6d5e80"
@@ -5542,18 +5546,22 @@ verror@1.10.0:
     extsprintf "^1.2.0"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 vm-browserify@0.0.4:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-0.0.4.tgz#5d7ea45bbef9e4a6ff65f95438e0a87c357d5a73"
   dependencies:
     indexof "0.0.1"
 
+=======
+>>>>>>> Add vue dependencies
 vue-flatpickr-component@^7.0.4:
   version "7.0.4"
   resolved "https://registry.yarnpkg.com/vue-flatpickr-component/-/vue-flatpickr-component-7.0.4.tgz#29909596555f5160792a917f469f9e809e5e6c26"
   dependencies:
     flatpickr "^4.4.6"
 
+<<<<<<< HEAD
 vue-hot-reload-api@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/vue-hot-reload-api/-/vue-hot-reload-api-2.3.0.tgz#97976142405d13d8efae154749e88c4e358cf926"
@@ -5568,10 +5576,13 @@ vue-loader@^15.2.6:
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
 
+=======
+>>>>>>> Add vue dependencies
 vue-router@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.0.1.tgz#d9b05ad9c7420ba0f626d6500d693e60092cc1e9"
 
+<<<<<<< HEAD
 vue-style-loader@^4.1.0:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/vue-style-loader/-/vue-style-loader-4.1.1.tgz#7c1d051b24f60b1707602b549ed50b4c8111d316"
@@ -5590,10 +5601,13 @@ vue-template-es2015-compiler@^1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.6.0.tgz#dc42697133302ce3017524356a6c61b7b69b4a18"
 
+=======
+>>>>>>> Add vue dependencies
 vue@^2.5.16:
   version "2.5.16"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.16.tgz#07edb75e8412aaeed871ebafa99f4672584a0085"
 
+<<<<<<< HEAD
 watchpack@^1.5.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/watchpack/-/watchpack-1.6.0.tgz#4bc12c2ebe8aa277a71f1d3f14d685c7b446cd00"
@@ -5721,6 +5735,8 @@ websocket-extensions@>=0.1.1:
 
 =======
 >>>>>>> Remove unused packages
+=======
+>>>>>>> Add vue dependencies
 which-module@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/which-module/-/which-module-1.0.0.tgz#bba63ca861948994ff307736089e3b96026c2a4f"

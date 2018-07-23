@@ -12,7 +12,6 @@ module.exports = {
         break;
       }
     }
-    let emailSyncOption = account[i].emailSync;
         var config = {
           "user": account[i].email,
           "password": account[i].password,
@@ -21,7 +20,6 @@ module.exports = {
           "tls": true,
         }
     var imap = new Imap(config);
-
     function openInbox(cb) {
       imap.openBox('INBOX', true, cb);
     }
@@ -31,7 +29,7 @@ module.exports = {
       openInbox(function (err, box) {
 
         if (err) throw err;
-        imap.search([emailSyncOption, ['SINCE', account[i].initialDate]], function (err, results) {
+        imap.search([email.syncOption, ['SINCE', account[i].initialDate]], function (err, results) {
           if (err) throw err;
           var fetch = imap.fetch(results, {
             bodies: ''
@@ -43,8 +41,7 @@ module.exports = {
                 .then(async function (mail_object) {
                   await frappe.insert({
                     doctype: 'Email',
-                    // EDITS 
-                    name: "Received from : " + mail_object.to.value[0].address + " " + mail_object.subject.slice(0, 10), // needs change : THINK 
+                    name: mail_object.to.value[0].address + " " + mail_object.subject.slice(0, 10),
                     fromEmailAddress: mail_object.from.value[0].address,
                     toEmailAddress: mail_object.to.value[0].address,
                     ccEmailAddress: mail_object.cc,

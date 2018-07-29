@@ -55,12 +55,15 @@ function getConfig() {
                         'css-loader',
                         'sass-loader'
                     ]
+<<<<<<< HEAD
                 },
                 {
                     test: /\.(png|svg|jpg|gif)$/,
                     use: [
                       'file-loader'
                     ]
+=======
+>>>>>>> Frappe CLI for development
                 }
             ]
         },
@@ -68,8 +71,12 @@ function getConfig() {
             extensions: ['.js', '.vue'],
             alias: {
                 'vue$': 'vue/dist/vue.esm.js',
+<<<<<<< HEAD
                 'deepmerge$': 'deepmerge/dist/umd.js',
                 '@': resolveAppDir(appConfig.dev.srcDir)
+=======
+                'deepmerge$': 'deepmerge/dist/umd.js'
+>>>>>>> Frappe CLI for development
             }
         },
         plugins: [
@@ -78,25 +85,43 @@ function getConfig() {
             }),
             new plugins.VueLoader(),
             new plugins.Html({
+<<<<<<< HEAD
                 template: resolveAppDir(appConfig.dev.entryHtml)
+=======
+                template: resolveAppDir('src/index.html')
+>>>>>>> Frappe CLI for development
             }),
             new plugins.CaseSensitivePaths(),
             new plugins.NamedModules(),
             new plugins.HotModuleReplacement(),
+<<<<<<< HEAD
             // new plugins.FriendlyErrors({
             //     compilationSuccessInfo: {
             //         messages: [`FrappeJS server started at http://${appConfig.dev.devServerHost}:${appConfig.dev.devServerPort}`],
             //     },
             // }),
+=======
+            new plugins.FriendlyErrors({
+                compilationSuccessInfo: {
+                    messages: [`FrappeJS server started at http://${appConfig.dev.devServerHost}:${appConfig.dev.devServerPort}`],
+                },
+            }),
+>>>>>>> Frappe CLI for development
             new plugins.Progress()
         ],
         optimization: {
             noEmitOnErrors: false
         },
         devServer: {
+<<<<<<< HEAD
             // contentBase: './dist', // dist path is directly configured in express
             hot: true,
             quiet: false
+=======
+            contentBase: './dist',
+            hot: true,
+            quiet: true
+>>>>>>> Frappe CLI for development
         },
         node: {
             // prevent webpack from injecting useless setImmediate polyfill because Vue

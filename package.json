@@ -1,60 +1,63 @@
 {
   "name": "frappejs",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Frappe.js",
   "main": "index.js",
-  "bin": "cli.js",
+  "bin": {
+    "frappe": "cli.js"
+  },
   "scripts": {
     "test": "mocha tests",
     "start": "nodemon app.js"
   },
   "dependencies": {
-    "autoprefixer": "^7.2.4",
     "awesomplete": "^1.1.2",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
     "bcrypt": "^2.0.1",
     "body-parser": "^1.18.2",
-    "bootstrap": "^4.0.0",
-    "clusterize.js": "^0.18.0",
+    "bootstrap": "^4.1.2",
+    "case-sensitive-paths-webpack-plugin": "^2.1.2",
     "codemirror": "^5.35.0",
     "commander": "^2.13.0",
     "cors": "^2.8.4",
+    "css-loader": "^1.0.0",
     "deepmerge": "^2.1.0",
-    "eslint": "^4.19.1",
+    "electron": "2.0.5",
+    "electron-debug": "^2.0.0",
+    "electron-devtools-installer": "^2.2.4",
     "express": "^4.16.2",
+    "feather-icons": "^4.7.3",
     "flatpickr": "^4.3.2",
     "formidable": "^1.2.1",
     "frappe-datatable": "^1.1.2",
+    "friendly-errors-webpack-plugin": "^1.7.0",
+    "html-webpack-plugin": "^3.2.0",
     "jquery": "^3.3.1",
     "jwt-simple": "^0.5.1",
     "luxon": "^1.0.0",
     "mkdirp": "^0.5.1",
-    "mocha": "^4.1.0",
-    "moment": "^2.20.1",
     "morgan": "^1.9.0",
     "mysql": "^2.15.0",
     "node-fetch": "^1.7.3",
     "node-sass": "^4.7.2",
-    "nodemon": "^1.14.7",
     "nunjucks": "^3.1.0",
     "octicons": "^7.2.0",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
-    "popper.js": "^1.12.9",
-    "precss": "^2.0.0",
     "puppeteer": "^1.2.0",
-    "rollup": "^0.55.1",
-    "rollup-plugin-commonjs": "^8.3.0",
-    "rollup-plugin-html": "^0.2.1",
-    "rollup-plugin-json": "^2.3.0",
-    "rollup-plugin-node-resolve": "^3.0.2",
-    "rollup-plugin-postcss": "^1.2.7",
-    "rollup-plugin-replace": "^2.0.0",
-    "rollup-plugin-sass": "^0.5.3",
+    "sass-loader": "^7.0.3",
     "showdown": "^1.8.6",
     "socket.io": "^2.0.4",
-    "sortablejs": "^1.7.0",
     "sqlite3": "^3.1.13",
-    "walk": "^2.3.9"
+    "vue": "^2.5.16",
+    "vue-flatpickr-component": "^7.0.4",
+    "vue-loader": "^15.2.6",
+    "vue-router": "^3.0.1",
+    "vue-template-compiler": "^2.5.16",
+    "webpack": "^4.16.1",
+    "webpack-dev-server": "^3.1.4",
+    "webpack-hot-middleware": "^2.22.3"
   },
   "repository": {
     "type": "git",
@@ -69,8 +72,11 @@
     "url": "https://github.com/frappe/frappejs/issues"
   },
   "homepage": "https://github.com/frappe/frappejs#readme",
-  "devDependencies": {},
+  "devDependencies": {
+    "mocha": "^5.2.0",
+    "nodemon": "^1.18.3"
+  },
   "engines": {
-    "node": "8.11.1"
+    "node": ">=8.11.0"
   }
 }

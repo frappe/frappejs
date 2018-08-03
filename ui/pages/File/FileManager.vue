@@ -54,6 +54,7 @@ export default {
     },
     methods: {
         source(){
+            console.log(this.src);
             return this.src;
         },
         onSave(doc) {

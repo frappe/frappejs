@@ -1,33 +1,24 @@
 <template>
-        <div class="frappe-list-form row no-gutters">
-            <div class="col-4 border-right">
-                <frappe-list :doctype="doctype" :filters="filters" :newDoc="openNewDoc" :key="doctype" @openForm="onOpenForm" @deleted="onDeleteFile" />
-            </div>
-            <div class="col-8">
-                <div class="container">
+    <div class="container">
+            <div class="col-md-8 col-md-offset-2">
+                <form action="/api/method/file_transfer" method="post" enctype="multipart/form-data">
                     <div class="row">
-                        <div class="col-md-8 col-md-offset-2">
-                            <form action="/api/method/file_transfer" method="post" enctype="multipart/form-data">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label for="image_title">File Name</label>
-                                        <input class="list-group-item item" type='text' ref="image_title" name="image_title"><br><br>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <br>
-                                        <input class="list-group-item item" type="submit">
-                                    </div>
-                                </div>
-                                <input class="list-group-item item" type="file" ref="image" name="filetoupload" @change="display()"><br><br>
-                            </form>
-                            <div v-if="imgshow">
-                                <img :src="preview()">
-                            </div>
+                        <div class="col-md-10">
+                                <label for="image_title">Title</label>
+                                <input class="list-group-item item" type='text' ref="image_title" name="image_title"><br><br>
+                        </div>
+                        <div class="col-md-2 submit">
+                                <br>
+                                <input class="list-group-item item" type="submit">
                         </div>
                     </div>
+                    <input class="list-group-item item" type="file" ref="image" name="filetoupload" @change="display()"><br><br>
+                </form>
+                <div v-if="imgshow">
+                    <img :src="preview()">
                 </div>
             </div>
-        </div>
+    </div>
 </template>
 <script>
 import frappe from "frappejs";

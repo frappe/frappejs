@@ -14,6 +14,7 @@
 <script>
 import List from '../../components/List/List';
 import Form from '../../components/Form/Form';
+import FilePick from './FilePick';
 import frappe from 'frappejs';
 
 export default {
@@ -66,8 +67,12 @@ export default {
             this.$router.push(`/FileEdit/${this.doctype}/${name}`);
         },
         async openNewDoc() {
-            let doc = await frappe.getNewDoc(this.doctype);
-            this.$router.push(`/FilePick/FileContent`);
+            let options = {
+            title: "Add a new file",
+            component: FilePick,
+        }
+            this.$modal.show(options);
+            //this.$router.push(`/FilePick/FileContent`);
         },
         async onDeleteFile(checkList){
             console.log(checkList);

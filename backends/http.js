@@ -7,7 +7,7 @@ module.exports = class HTTPClient extends Observable {
 
         this.server = server;
         this.protocol = protocol;
-        frappe.config.serverURL = this.getURL();
+        frappe.config.serverURL = this.getURL(this.server);
 
         // if the backend is http, then always client!
         frappe.isServer = false;
@@ -21,15 +21,18 @@ module.exports = class HTTPClient extends Observable {
 
     async insert(doctype, doc) {
         doc.doctype = doctype;
-        let url = this.getURL('/api/resource', doctype);
-        return await this.fetch(url, {
-            method: 'POST',
-            body: JSON.stringify(doc)
-        })
+        let parts = ['/api/resource', doctype],
+            fetchParams = {
+                method: 'POST',
+                body: JSON.stringify(doc)
+            };
+
+        await this.sync(fetchParams, parts);
+        return await this.fetch(this.getURL(this.server, ...parts), fetchParams);
     }
 
     async get(doctype, name) {
-        let url = this.getURL('/api/resource', doctype, name);
+        let url = this.getURL(this.server, '/api/resource', doctype, name);
         return await this.fetch(url, {
             method: 'GET',
             headers: this.getHeaders()
@@ -37,7 +40,7 @@ module.exports = class HTTPClient extends Observable {
     }
 
     async getAll({ doctype, fields, filters, start, limit, sort_by, order }) {
-        let url = this.getURL('/api/resource', doctype);
+        let url = this.getURL(this.server, '/api/resource', doctype);
 
         url = url + "?" + frappe.getQueryString({
             fields: JSON.stringify(fields),
@@ -53,31 +56,45 @@ module.exports = class HTTPClient extends Observable {
         });
     }
 
+    async sync(fetchParams, parts) {
+        return await Promise.all(
+            frappe.config.siblings.map(url => {
+                this.fetch(this.getURL(url, ...parts), fetchParams);
+            })
+        );
+    }
+
     async update(doctype, doc) {
         doc.doctype = doctype;
-        let url = this.getURL('/api/resource', doctype, doc.name);
+        let parts = ['/api/resource', doctype, doc.name],
+            fetchParams = {
+                method: 'PUT',
+                body: JSON.stringify(doc)
+            };
 
-        return await this.fetch(url, {
-            method: 'PUT',
-            body: JSON.stringify(doc)
-        });
+        await this.sync(fetchParams, parts);
+        return await this.fetch(this.getURL(this.server, ...parts), fetchParams);
     }
 
     async delete(doctype, name) {
-        let url = this.getURL('/api/resource', doctype, name);
+        let parts = ['/api/resource', doctype, name],
+            fetchParams = {
+                method: 'DELETE',
+            };
 
-        return await this.fetch(url, {
-            method: 'DELETE',
-        });
+        await this.sync(fetchParams, parts);
+        return await this.fetch(this.getURL(this.server, ...parts), fetchParams);
     }
 
     async deleteMany(doctype, names) {
-        let url = this.getURL('/api/resource', doctype);
+        let parts = ['/api/resource', doctype],
+            fetchParams = {
+                method: 'DELETE',
+                body: JSON.stringify(names)
+            };
 
-        return await this.fetch(url, {
-            method: 'DELETE',
-            body: JSON.stringify(names)
-        });
+        await this.sync(fetchParams, parts);
+        return await this.fetch(this.getURL(this.server, ...parts), fetchParams);
     }
 
     async exists(doctype, name) {
@@ -85,7 +102,7 @@ module.exports = class HTTPClient extends Observable {
     }
 
     async getValue(doctype, name, fieldname) {
-        let url = this.getURL('/api/resource', doctype, name, fieldname);
+        let url = this.getURL(this.server, '/api/resource', doctype, name, fieldname);
 
         return (await this.fetch(url, {
             method: 'GET',
@@ -104,8 +121,8 @@ module.exports = class HTTPClient extends Observable {
         return data;
     }
 
-    getURL(...parts) {
-        return this.protocol + '://' + this.server + (parts || []).join('/');
+    getURL(server, ...parts) {
+        return this.protocol + '://' + server + (parts || []).join('/');
     }
 
     getHeaders() {

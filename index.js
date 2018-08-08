@@ -1,19 +1,20 @@
 const Observable = require('./utils/observable');
 
 module.exports = {
-    async init() {
+    async init(siblings) {
         if (this._initialized) return;
-        this.initConfig();
+        this.initConfig(siblings);
         this.initGlobals();
         this.docs = new Observable();
         this._initialized = true;
     },
 
-    initConfig() {
+    initConfig(siblings) {
         this.config = {
             serverURL: '',
             backend: 'sqlite',
-            port: 8000
+            port: 8000,
+            siblings: siblings
         };
     },
 

@@ -36,6 +36,7 @@
     "jquery": "^3.3.1",
     "jwt-simple": "^0.5.1",
     "luxon": "^1.0.0",
+    "mailparser": "^2.3.2",
     "mkdirp": "^0.5.1",
     "morgan": "^1.9.0",
     "mysql": "^2.15.0",

@@ -40,6 +40,11 @@ module.exports = {
         // app
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({ extended: true }));
+
+        for (let staticPath of [appConfig.distPath, appConfig.staticPath]) {
+          app.use(express.static(staticPath));
+        }
+
         app.use(morgan('tiny'));
 
         if (connectionParams.enableCORS) {

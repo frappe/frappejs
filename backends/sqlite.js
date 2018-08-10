@@ -79,7 +79,7 @@ module.exports = class sqliteDatabase extends Database {
             this.typeMap[field.fieldtype],
             field.fieldname === 'name' ? 'PRIMARY KEY NOT NULL' : '',
             field.required ? 'NOT NULL' : '',
-            field.default ? `DEFAULT ${field.default}` : ''
+            field.default ? `DEFAULT '${field.default}'` : ''
         ].join(' ');
 
         return def;

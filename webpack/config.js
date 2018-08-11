@@ -55,6 +55,12 @@ function getConfig() {
                         'css-loader',
                         'sass-loader'
                     ]
+                },
+                {
+                    test: /\.(png|svg|jpg|gif)$/,
+                    use: [
+                      'file-loader'
+                    ]
                 }
             ]
         },
@@ -62,7 +68,8 @@ function getConfig() {
             extensions: ['.js', '.vue'],
             alias: {
                 'vue$': 'vue/dist/vue.esm.js',
-                'deepmerge$': 'deepmerge/dist/umd.js'
+                'deepmerge$': 'deepmerge/dist/umd.js',
+                '@': resolveAppDir(appConfig.dev.srcDir)
             }
         },
         plugins: [
@@ -71,16 +78,16 @@ function getConfig() {
             }),
             new plugins.VueLoader(),
             new plugins.Html({
-                template: resolveAppDir('src/index.html')
+                template: resolveAppDir(appConfig.dev.entryHtml)
             }),
             new plugins.CaseSensitivePaths(),
             new plugins.NamedModules(),
             new plugins.HotModuleReplacement(),
-            new plugins.FriendlyErrors({
-                compilationSuccessInfo: {
-                    messages: [`FrappeJS server started at http://${appConfig.dev.devServerHost}:${appConfig.dev.devServerPort}`],
-                },
-            }),
+            // new plugins.FriendlyErrors({
+            //     compilationSuccessInfo: {
+            //         messages: [`FrappeJS server started at http://${appConfig.dev.devServerHost}:${appConfig.dev.devServerPort}`],
+            //     },
+            // }),
             new plugins.Progress()
         ],
         optimization: {
@@ -91,7 +98,7 @@ function getConfig() {
             contentBase: './dist',
             // contentBase: './dist', // dist path is directly configured in express
             hot: true,
-            quiet: true
+            quiet: false
         },
         node: {
             // prevent webpack from injecting useless setImmediate polyfill because Vue

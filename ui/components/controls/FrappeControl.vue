@@ -41,6 +41,7 @@ export default {
         };
       }
 
+<<<<<<< HEAD
       return {
         Autocomplete,
         Check,
@@ -68,6 +69,27 @@ export default {
       }
 
       return Boolean(disabled);
+=======
+            return {
+                Autocomplete,
+                Check,
+                Code,
+                Currency,
+                Data,
+                Date,
+                DynamicLink,
+                File,
+                Float,
+                Int,
+                Link,
+                Password,
+                Select,
+                Table,
+                Text,
+                Time,
+            }[this.docfield.fieldtype];
+        }
+>>>>>>> d09e216... Add file-loader and indexEntry
     }
   }
 };

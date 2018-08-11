@@ -1,35 +1,39 @@
 const frappe = require('frappejs');
 const simpleParser = require('mailparser').simpleParser;
 const Imap = require('imap');
-const getConfig = require("./getConfig");
 
 module.exports = {
-  sync: async (email) => {
-    let account = await getConfig();
-    var i ;
-    for (i = 0; i < account.length; i++) {
-      if (account[i].email == email.Id) {
-        break;
+  sync: async ({
+    email,
+    syncOption
+  }) => {
+    // could be replaced with getDoc if account name is set same as email
+    let account = await frappe.db.getAll({
+      doctype: 'EmailAccount',
+      fields: ['email', 'password', 'imapHost', 'imapPort', 'initialDate'],
+      filters: {
+        email: email,
       }
+    });
+    account = account[0];
+    var config = {
+      "user": account.email,
+      "password": account.password,
+      "host": account.imapHost,
+      "port": account.imapPort,
+      "tls": true,
     }
-        var config = {
-          "user": account[i].email,
-          "password": account[i].password,
-          "host": account[i].imapHost,
-          "port": account[i].imapPort,
-          "tls": true,
-        }
     var imap = new Imap(config);
+
     function openInbox(cb) {
       imap.openBox('INBOX', true, cb);
     }
-
     imap.once('ready', function () {
 
       openInbox(function (err, box) {
 
         if (err) throw err;
-        imap.search([email.syncOption, ['SINCE', account[i].initialDate]], function (err, results) {
+        imap.search([syncOption, ['SINCE', account.initialDate]], function (err, results) {
           if (err) throw err;
           var fetch = imap.fetch(results, {
             bodies: ''
@@ -41,8 +45,7 @@ module.exports = {
                 .then(async function (mail_object) {
                   await frappe.insert({
                     doctype: 'Email',
-                    // EDITS 
-                    name: "Received from : " + mail_object.to.value[0].address + " " + mail_object.subject.slice(0, 10), // needs change : THINK 
+                    name: mail_object.messageId,
                     fromEmailAddress: mail_object.from.value[0].address,
                     toEmailAddress: mail_object.to.value[0].address,
                     ccEmailAddress: mail_object.cc,
@@ -51,7 +54,7 @@ module.exports = {
                     subject: mail_object.subject,
                     bodyHtml: mail_object.html,
                     bodyText: mail_object.text,
-                    sent: "1",
+                    sent: 0,
                   });
                 })
                 .catch(function (err) {

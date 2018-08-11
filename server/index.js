@@ -16,10 +16,10 @@ const fs = require('fs');
 const { setupExpressRoute: setRouteForPDF } = require('frappejs/server/pdf');
 const auth = require('./../auth/auth')();
 const morgan = require('morgan');
+const setupEmail = require('../email');
 const { addWebpackMiddleware } = require('../webpack/serve');
 const { getAppConfig } = require('../webpack/utils');
 const appConfig = getAppConfig();
-const setupEmail = require('../email');
 
 require.extensions['.html'] = function (module, filename) {
     module.exports = fs.readFileSync(filename, 'utf8');

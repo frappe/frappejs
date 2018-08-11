@@ -59,7 +59,7 @@ module.exports = class sqliteDatabase extends Database {
     async runCreateTableQuery(doctype, columns, indexes) {
         const query = `CREATE TABLE IF NOT EXISTS ${doctype} (
             ${columns.join(", ")} ${indexes.length ? (", " + indexes.join(", ")) : ''})`;
-
+            
         return await this.run(query);
     }
 

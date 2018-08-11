@@ -41,7 +41,6 @@ export default {
         };
       }
 
-<<<<<<< HEAD
             return {
                 Autocomplete,
                 Check,
@@ -61,38 +60,6 @@ export default {
                 Time,
             }[this.docfield.fieldtype];
         }
-=======
-      return {
-        Autocomplete,
-        Check,
-        Code,
-        Currency,
-        Data,
-        Date,
-        DynamicLink,
-        File,
-        Float,
-        Int,
-        Link,
-        Password,
-        Select,
-        Table,
-        Text
-      }[this.docfield.fieldtype];
-    },
-    isDisabled() {
-      let disabled = this.docfield.disabled;
-
-      if (this.doc && this.doc.submitted) {
-        disabled = true;
-      }
-
-      if (this.docfield.formula && this.docfield.fieldtype !== 'Table') {
-        disabled = true;
-      }
-
-      return Boolean(disabled);
->>>>>>> Form
     }
   }
 };

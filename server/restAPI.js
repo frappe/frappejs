@@ -1,13 +1,6 @@
 const frappe = require('frappejs');
 const path = require('path');
 const multer = require('multer');
-const storage = multer.diskStorage({
-    destination: 'dist/static/attachments/',
-    filename: function (req, file, callback) {
-      callback(null, Date.now() + path.extname(file.originalname));
-    }
-});
-const upload = multer({ storage: storage });
 
 module.exports = {
     setup(app) {
@@ -122,7 +115,18 @@ module.exports = {
         }));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+        const storage = multer.diskStorage({
+            destination: 'dist/static/attachments/',
+            filename: function (req, file, callback) {
+              callback(null, Date.now() + path.extname(file.originalname));
+            }
+        });
+        const upload = multer({ storage: storage });
+
+>>>>>>> 5baefe3... Add file-loader and indexEntry
         app.post('/api/upload', upload.array('attachments') ,frappe.asyncHandler(async function(request, response) {
             let attachments = request.files;
             let attachmentsPath = [];

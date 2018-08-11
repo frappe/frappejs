@@ -16,10 +16,17 @@ const fs = require('fs');
 const { setupExpressRoute: setRouteForPDF } = require('frappejs/server/pdf');
 const auth = require('./../auth/auth')();
 const morgan = require('morgan');
+<<<<<<< HEAD
 const { addWebpackMiddleware } = require('../webpack/serve');
 const { getAppConfig } = require('../webpack/utils');
+<<<<<<< HEAD
 
 frappe.conf = getAppConfig();
+=======
+const appConfig = getAppConfig();
+=======
+>>>>>>> Added image upload to rest api
+>>>>>>> dde2752... Added image upload to rest api
 
 require.extensions['.html'] = function (module, filename) {
     module.exports = fs.readFileSync(filename, 'utf8');

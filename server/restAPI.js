@@ -1,6 +1,13 @@
 const frappe = require('frappejs');
 const path = require('path');
 const multer = require('multer');
+const storage = multer.diskStorage({
+    destination: 'dist/static/attachments/',
+    filename: function (req, file, callback) {
+      callback(null, Date.now() + path.extname(file.originalname));
+    }
+});
+const upload = multer({ storage: storage });
 
 module.exports = {
     setup(app) {
@@ -114,5 +121,25 @@ module.exports = {
             return response.json({});
         }));
 
+<<<<<<< HEAD
+=======
+        app.post('/api/upload', upload.array('attachments') ,frappe.asyncHandler(async function(request, response) {
+            let attachments = request.files;
+            let attachmentsPath = [];
+            if(attachments){
+                for(let attachment of attachments){
+                    attachmentsPath.push(attachment.path);
+                }
+                response.json(attachmentsPath);
+            }else {
+                response.json('failed');
+            }
+        }));
+
+        app.delete('/api/upload/:path', frappe.asyncHandler(async function(request, response){
+            //delete local saved file
+        }));
+
+>>>>>>> dde2752... Added image upload to rest api
     }
 };

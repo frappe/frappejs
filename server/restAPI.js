@@ -1,6 +1,9 @@
 const frappe = require('frappejs');
 const path = require('path');
+const fs = require('fs');
 const multer = require('multer');
+const { getAppConfig, resolveAppDir } = require('../webpack/utils');
+const appConfig = getAppConfig();
 
 module.exports = {
     setup(app) {
@@ -76,7 +79,11 @@ module.exports = {
         }));
 
         const storage = multer.diskStorage({
+<<<<<<< HEAD
             destination: 'dist/static/attachments/',
+=======
+            destination: appConfig.staticPath + '/attachments/',
+>>>>>>> Added delete file route
             filename: function (req, file, callback) {
               callback(null, Date.now() + path.extname(file.originalname));
             }
@@ -96,8 +103,16 @@ module.exports = {
             }
         }));
 
-        app.delete('/api/upload/:path', frappe.asyncHandler(async function(request, response){
+        app.delete('/api/upload/:folder/:filename', frappe.asyncHandler(async function(request, response){
             //delete local saved file
+            const filePath = appConfig.staticPath +'/'+ request.params.folder +'/'+ request.params.filename;
+            fs.unlink(filePath, function (err) {
+                if (err){
+                    response.status(500).json(err)
+                } else {
+                    response.json('Deleted');
+                }
+            });
         }));
 
     }

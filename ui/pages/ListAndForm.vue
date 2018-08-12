@@ -1,7 +1,7 @@
 <template>
     <div class="frappe-list-form row no-gutters">
         <div class="col-4 border-right">
-            <frappe-list :doctype="doctype" :key="doctype" />
+            <frappe-list :doctype="doctype" :key="doctype" @newDoc="openNewDoc" @openForm="onOpenForm" />
         </div>
         <div class="col-8">
             <frappe-form v-if="name" :key="doctype + name" :doctype="doctype" :name="name" @save="onSave" />
@@ -23,7 +23,14 @@ export default {
              if (doc.name !== this.$route.params.name) {
                 this.$router.push(`/edit/${doc.doctype}/${doc.name}`);
             }
-        }
+        },
+        onOpenForm(name) {
+            this.$router.push(`/edit/${this.doctype}/${name}`);
+        },
+        async openNewDoc() {
+            let doc = await frappe.getNewDoc(this.doctype);
+            this.$router.push(`/edit/${this.doctype}/${doc.name}`);
+        },
     }
 }
 </script>

@@ -29,6 +29,7 @@
     "express": "^4.16.2",
     "feather-icons": "^4.7.3",
     "flatpickr": "^4.3.2",
+    "formidable": "^1.2.1",
     "frappe-datatable": "^1.1.2",
     "friendly-errors-webpack-plugin": "^1.7.0",
     "html-webpack-plugin": "^3.2.0",

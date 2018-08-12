@@ -3,7 +3,7 @@
             <list-actions
               :doctype="doctype"
               :showDelete="checkList.length"
-              @new="newDoc"
+              @new="$emit('newDoc')"
               @delete="deleteCheckedItems"
             />
             <ul class="list-group">
@@ -11,7 +11,7 @@
                     :id="doc.name"
                     :isActive="doc.name === $route.params.name"
                     :isChecked="isChecked(doc.name)"
-                    @clickItem="openForm(doc.name)"
+                    @clickItem="reqOpenForm(doc.name)"
                     @checkItem="toggleCheck(doc.name)"
                 >
                     <indicator v-if="hasIndicator" :color="getIndicatorColor(doc)" />
@@ -60,10 +60,6 @@ export default {
     this.updateList();
   },
   methods: {
-    async newDoc() {
-      let doc = await frappe.getNewDoc(this.doctype);
-      this.$router.push(`/edit/${this.doctype}/${doc.name}`);
-    },
     async updateList(query=null) {
       let filters = null
       if (query) {
@@ -87,12 +83,13 @@ export default {
 
       this.data = data;
     },
-    openForm(name) {
+    reqOpenForm(name) {
       this.activeItem = name;
-      this.$router.push(`/edit/${this.doctype}/${name}`);
+      this.$emit("openForm",name);
     },
     async deleteCheckedItems() {
-      await frappe.db.deleteMany(this.doctype, this.checkList);
+      this.$emit('deleted',this.checkList);
+      await frappe.db.deleteMany(this.doctype,this.checkList);
       this.checkList = [];
     },
     toggleCheck(name) {

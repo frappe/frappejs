@@ -19,6 +19,7 @@ const morgan = require('morgan');
 const { addWebpackMiddleware } = require('../webpack/serve');
 const { getAppConfig } = require('../webpack/utils');
 const appConfig = getAppConfig();
+const setupFileMethods = require('./file');
 
 require.extensions['.html'] = function (module, filename) {
     module.exports = fs.readFileSync(filename, 'utf8');
@@ -76,6 +77,7 @@ module.exports = {
         frappe.server = server;
 
         setRouteForPDF();
+        setupFileMethods();
     },
 
     async init() {

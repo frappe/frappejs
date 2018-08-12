@@ -96,7 +96,7 @@ function getConfig() {
         devServer: {
             // contentBase: './dist', // dist path is directly configured in express
             hot: true,
-            quiet: true
+            quiet: false
         },
         node: {
             // prevent webpack from injecting useless setImmediate polyfill because Vue

@@ -51,7 +51,7 @@ export default {
         },
         async openNewDoc() {
             let doc = await frappe.getNewDoc(this.doctype);
-            this.$router.push(`/Fpick/FileContent`);
+            this.$router.push(`/Fpick/File`);
         },
         async onDeleteFile(checkList){
             console.log(checkList);

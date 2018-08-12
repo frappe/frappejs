@@ -1,5 +1,5 @@
 module.exports = {
-    name: "FileContent",
+    name: "File",
     doctype: "DocType",
     isSingle: 0,
     istable: 0,

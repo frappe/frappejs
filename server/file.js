@@ -19,7 +19,7 @@ function fileSaver(req){
         var oldpath = files.filetoupload.path;
         var newpath = "../accounting/static/"+files.filetoupload.name;
         frappe.insert({
-            doctype:'FileContent',
+            doctype:'File',
             name:fields.image_title,
             path:"accounting/static/"+files.filetoupload.name
             })
@@ -32,7 +32,7 @@ function fileSaver(req){
 async function fileDelete(fileList){
     for(var i = 0; i < fileList.length ; i++ )
     {
-        let file = await frappe.getDoc('FileContent', fileList[i]);
+        let file = await frappe.getDoc('File', fileList[i]);
         let filePath = "../"+file.path;
         fs.unlink(filePath,(err)=>{
             if (err) throw err;

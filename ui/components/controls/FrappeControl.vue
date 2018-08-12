@@ -41,27 +41,6 @@ export default {
         };
       }
 
-<<<<<<< HEAD
-            return {
-                Autocomplete,
-                Check,
-                Code,
-                Currency,
-                Data,
-                Date,
-                DynamicLink,
-                File,
-                Float,
-                Int,
-                Link,
-                Password,
-                Select,
-                Table,
-                Text,
-                Time,
-            }[this.docfield.fieldtype];
-        }
-=======
       return {
         Autocomplete,
         Check,
@@ -92,7 +71,6 @@ export default {
       }
 
       return Boolean(disabled);
->>>>>>> Form
     }
   }
 };

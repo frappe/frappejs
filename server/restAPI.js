@@ -76,11 +76,7 @@ module.exports = {
         }));
 
         const storage = multer.diskStorage({
-<<<<<<< HEAD
-            destination: 'dist/static/attachments/',
-=======
             destination: './static/attachments/',
->>>>>>> Add file-loader and indexEntry
             filename: function (req, file, callback) {
               callback(null, Date.now() + path.extname(file.originalname));
             }

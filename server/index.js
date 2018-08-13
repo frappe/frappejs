@@ -18,12 +18,14 @@ const auth = require('./../auth/auth')();
 const morgan = require('morgan');
 const { addWebpackMiddleware } = require('../webpack/serve');
 const { getAppConfig } = require('../webpack/utils');
-const appConfig = getAppConfig();
-const setupFileMethods = require('./file');
+
+frappe.conf = getAppConfig();
 
 require.extensions['.html'] = function (module, filename) {
     module.exports = fs.readFileSync(filename, 'utf8');
 };
+
+process.env.NODE_ENV = 'development';
 
 module.exports = {
     async start({backend, connectionParams, models, authConfig=null}) {
@@ -40,9 +42,8 @@ module.exports = {
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({ extended: true }));
 
-        for (let staticPath of [appConfig.distPath, appConfig.staticPath]) {
-          app.use(express.static(staticPath));
-        }
+        app.use(express.static(frappe.conf.distPath));
+        app.use('/static', express.static(frappe.conf.staticPath))
 
         app.use(morgan('tiny'));
 
@@ -66,7 +67,7 @@ module.exports = {
             addWebpackMiddleware(app);
         }
 
-        frappe.config.port = appConfig.dev.devServerPort
+        frappe.config.port = frappe.conf.dev.devServerPort;
 
         // listen
         server.listen(frappe.config.port, () => {
@@ -77,7 +78,6 @@ module.exports = {
         frappe.server = server;
 
         setRouteForPDF();
-        setupFileMethods();
     },
 
     async init() {

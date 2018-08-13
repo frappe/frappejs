@@ -11,7 +11,7 @@
                     :id="doc.name"
                     :isActive="doc.name === $route.params.name"
                     :isChecked="isChecked(doc.name)"
-                    @clickItem="reqOpenForm(doc.name)"
+                    @clickItem="openForm(doc.name)"
                     @checkItem="toggleCheck(doc.name)"
                 >
                     <indicator v-if="hasIndicator" :color="getIndicatorColor(doc)" />
@@ -60,14 +60,18 @@ export default {
     this.updateList();
   },
   methods: {
-    async updateList(query=null) {
-      let filters = null
+    async updateList(query = null) {
+      let filters = null;
       if (query) {
         filters = {
-          keywords : ['like', query]
-        }
+          keywords: ['like', query]
+        };
       }
-      const indicatorField = this.hasIndicator ? this.meta.indicators.key : null;
+
+      const indicatorField = this.hasIndicator
+        ? this.meta.indicators.key
+        : null;
+
       const fields = [
         'name',
         indicatorField,
@@ -83,13 +87,12 @@ export default {
 
       this.data = data;
     },
-    reqOpenForm(name) {
+    openForm(name) {
       this.activeItem = name;
-      this.$emit("openForm",name);
+      this.$emit('openForm', name);
     },
     async deleteCheckedItems() {
-      this.$emit('deleted',this.checkList);
-      await frappe.db.deleteMany(this.doctype,this.checkList);
+      await frappe.db.deleteMany(this.doctype, this.checkList);
       this.checkList = [];
     },
     toggleCheck(name) {
@@ -109,7 +112,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import "../../styles/variables";
+@import '../../styles/variables';
 
 .list-group-item {
   border-left: none;

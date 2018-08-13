@@ -114,23 +114,36 @@ export default {
     },
 
     eventCreated(...test) {
-      console.log(test);
-      var test = frappe.getNewDoc('Event')
+      var start = (test[0].start).format("YYYY-MM-DD HH:mm").split(" ")
+      var end = (test[0].end).format("YYYY-MM-DD HH:mm").split(" ")
+      console.log(start)
+      console.log(end)
+      var event = frappe.getNewDoc('Event')
       var final;
-      test.then((value) => {
+      event.then((value) => {
       this.$formModal.open(
         value,
         {
-        onClose: () => {
-          // if new doc was not created
-          // then reset the input value
-          console.log("XSX");
-          }
+          defaultValues: {
+            startDate: start[0],
+            startTime: start[1],
+            endDate: end[0],
+            endTime: end[1],            
+          },
+          onClose: () => {
+            // if new doc was not created
+            // then reset the input value
+            console.log("XSX");
+            location.reload();
+            }
         }
       );
+      value.on('afterInsert', data => {
+        console.log("XXXXXXXX");
+        this.$formModal.close();
+        location.reload();
       })
-
-
+      })
     },
   },
 };

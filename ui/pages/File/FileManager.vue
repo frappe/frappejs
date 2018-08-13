@@ -34,7 +34,7 @@ export default {
         if(this.name!=undefined)
         {
             this.onload=false;
-            let file = await frappe.getDoc('FileContent', this.name);
+            let file = await frappe.getDoc('File', this.name);
             this.src = "../../static/"+file.path.split("/")[2];
             this.onload=true;
             this.lame=this.name;
@@ -46,7 +46,7 @@ export default {
             if(this.name!=this.lame)
             {
                 this.onload=false;
-                let file = await frappe.getDoc('FileContent', this.name);
+                let file = await frappe.getDoc('File', this.name);
                 this.src = "../../static/"+file.path.split("/")[2];
                 this.onload=true;
                 this.lame=this.name;

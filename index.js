@@ -61,17 +61,6 @@ module.exports = {
         }
     },
 
-    registerFileMethod({method, handler}) {
-        this.methods[method] = handler;
-        if (this.app) {
-            // add to router if client-server
-            this.app.post(`/api/method/${method}`, this.asyncHandler(async function(request, response) {
-                const data = await handler(request);
-                response.redirect("/");
-            }));
-        }
-    },
-
     async call({method, args}) {
         if (this.isServer) {
             if (this.methods[method]) {

@@ -17,24 +17,6 @@ export default [
     props: true
   },
   {
-    path: '/FileList/:doctype',
-    name: 'FileList',
-    component: FileManager,
-    props: true
-  },
-  {
-    path: '/FileEdit/:doctype/:name',
-    name: 'FileForm',
-    component: FileManager,
-    props: true
-  },
-  {
-    path: '/FilePick/:doctype',
-    name: 'FilePick',
-    component: FilePick,
-    props: true
-  },
-  {
     path: '/print/:doctype/:name',
     name: 'PrintView',
     component: ListAndPrintView,

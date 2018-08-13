@@ -15,6 +15,7 @@
 import frappe from "frappejs";
 import Vue from 'vue'
 import FullCalendar from 'vue-full-calendar';
+import Form from '../components/Form/Form';
 const { DateTime } = require('luxon');
 Vue.use(FullCalendar);
 
@@ -114,6 +115,22 @@ export default {
 
     eventCreated(...test) {
       console.log(test);
+      var test = frappe.getNewDoc('Event')
+      var final;
+      test.then((value) => {
+      this.$formModal.open(
+        value,
+        {
+        onClose: () => {
+          // if new doc was not created
+          // then reset the input value
+          console.log("XSX");
+          }
+        }
+      );
+      })
+
+
     },
   },
 };

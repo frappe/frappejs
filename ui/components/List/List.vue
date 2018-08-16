@@ -1,26 +1,15 @@
 <template>
-        <div class="frappe-list">
-            <list-actions
-              :doctype="doctype"
-              :showDelete="checkList.length"
-              @new="$emit('newDoc')"
-              @delete="deleteCheckedItems"
-            />
-            <ul class="list-group">
-                <list-item v-for="doc of data" :key="doc.name"
-                    :id="doc.name"
-                    :isActive="doc.name === $route.params.name"
-                    :isChecked="isChecked(doc.name)"
-                    @clickItem="openForm(doc.name)"
-                    @checkItem="toggleCheck(doc.name)"
-                >
-                    <indicator v-if="hasIndicator" :color="getIndicatorColor(doc)" />
-                    <span class="d-inline-block ml-2">
-                        {{ doc[meta.titleField || 'name'] }}
-                    </span>
-                </list-item>
-            </ul>
-        </div>
+  <div class="frappe-list">
+    <list-actions :doctype="doctype" :showDelete="checkList.length" @new="$emit('newDoc')" :showCreateKanban="hasItems" @delete="deleteCheckedItems" />
+    <ul class="list-group">
+      <list-item v-for="doc of data" :key="doc.name" :id="doc.name" :isActive="doc.name === $route.params.name" :isChecked="isChecked(doc.name)" @clickItem="openForm(doc.name)" @checkItem="toggleCheck(doc.name)">
+        <indicator v-if="hasIndicator" :color="getIndicatorColor(doc)" />
+        <span class="d-inline-block ml-2">
+          {{ doc[meta.titleField || 'name'] }}
+        </span>
+      </list-item>
+    </ul>
+  </div>
 </template>
 <script>
 import frappe from 'frappejs';
@@ -47,6 +36,14 @@ export default {
     },
     hasIndicator() {
       return Boolean(this.meta.indicators);
+    },
+    hasItems() {
+      const fields = this.meta.fields;
+      const isSelectFieldPresent = fields.find(
+        field => field.fieldtype === 'Select'
+      );
+      if (isSelectFieldPresent && this.data.length > 0) return true;
+      else return false;
     }
   },
   created() {

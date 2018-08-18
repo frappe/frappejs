@@ -18,14 +18,17 @@ const auth = require('./../auth/auth')();
 const morgan = require('morgan');
 const { addWebpackMiddleware } = require('../webpack/serve');
 const { getAppConfig } = require('../webpack/utils');
-const appConfig = getAppConfig();
+
+frappe.conf = getAppConfig();
 
 require.extensions['.html'] = function (module, filename) {
     module.exports = fs.readFileSync(filename, 'utf8');
 };
 
+process.env.NODE_ENV = 'development';
+
 module.exports = {
-    async start({backend, connectionParams, models, staticPath = './', authConfig=null}) {
+    async start({backend, connectionParams, models, authConfig=null}) {
         await this.init();
 
         if (models) {
@@ -38,6 +41,10 @@ module.exports = {
         // app
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({ extended: true }));
+
+        app.use(express.static(frappe.conf.distPath));
+        app.use('/static', express.static(frappe.conf.staticPath))
+
         app.use(morgan('tiny'));
 
         if (connectionParams.enableCORS) {
@@ -60,7 +67,7 @@ module.exports = {
             addWebpackMiddleware(app);
         }
 
-        frappe.config.port = appConfig.dev.devServerPort
+        frappe.config.port = frappe.conf.dev.devServerPort;
 
         // listen
         server.listen(frappe.config.port, () => {

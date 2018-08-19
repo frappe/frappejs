@@ -1,6 +1,10 @@
-module.exports = class IonicSqlite{
-    constructor() {
+const frappe = require('frappejs');
+const Database = require('frappejs/backends/database');
+const Observable = require('frappejs/utils/observable');
 
+module.exports = class IonicSqlite extends Database{
+    constructor() {
+      super();
     }
 
     addOne(doctype,data,num,db){

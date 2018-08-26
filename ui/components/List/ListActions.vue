@@ -3,7 +3,7 @@
         <h5 class="m-0">{{ doctype }} List</h5>
         <button v-if="showDelete" class="btn btn-danger btn-sm" @click="$emit('delete')">Delete</button>
         <button v-else class="btn btn-primary btn-sm" @click="$emit('new')">New</button>
-        <button v-if="showCreateKanban" class="btn btn-primary btn-sm">Create Kanban</button>
+        <button v-if="showCreateKanban" class="btn btn-primary btn-sm" @click="$emit('createKanban')">Create Kanban</button>
     </div>
 </template>
 <script>

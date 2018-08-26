@@ -1,6 +1,6 @@
 <template>
   <div class="frappe-list">
-    <list-actions :doctype="doctype" :showDelete="checkList.length" @new="$emit('newDoc')" :showCreateKanban="hasItems" @delete="deleteCheckedItems" />
+    <list-actions :doctype="doctype" :showDelete="checkList.length" @new="$emit('newDoc')" :showCreateKanban="hasItems" @delete="deleteCheckedItems" @createKanban="createKanban" />
     <ul class="list-group">
       <list-item v-for="doc of data" :key="doc.name" :id="doc.name" :isActive="doc.name === $route.params.name" :isChecked="isChecked(doc.name)" @clickItem="openForm(doc.name)" @checkItem="toggleCheck(doc.name)">
         <indicator v-if="hasIndicator" :color="getIndicatorColor(doc)" />
@@ -15,6 +15,9 @@
 import frappe from 'frappejs';
 import ListActions from './ListActions';
 import ListItem from './ListItem';
+// import FormLayout from '../Form/FormLayout';
+import KanbanModel from '../../../models/doctype/Kanban/Kanban';
+import KanbanModal from '../KanbanModal';
 
 export default {
   name: 'List',
@@ -105,6 +108,26 @@ export default {
     },
     getIndicatorColor(doc) {
       return this.meta.getIndicatorColor(doc);
+    },
+    async createKanban() {
+      // const kanban = frappe.getMeta('Kanban');
+      // const fields = kanban.fields;
+      // const newDoc = await frappe.getNewDoc('Kanban');
+      KanbanModel.populateFieldsAndOptions(this.doctype).then(
+        refDoctypeFields => {
+          console.log('promise resolved');
+          this.$modal.show({
+            component: KanbanModal,
+            modalProps: {
+              title: 'Create Kanban'
+            },
+            props: {
+              refdoctype: this.doctype
+              // doc: newDoc
+            }
+          });
+        }
+      );
     }
   }
 };

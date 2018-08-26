@@ -26,6 +26,7 @@ export default {
     const dataObj = {};
     for (let df of this.fields) {
       dataObj[df.fieldname] = this.doc[df.fieldname];
+      console.log(dataObj[df.fieldname]);
 
       if (df.fieldtype === 'Table' && !dataObj[df.fieldname]) {
         dataObj[df.fieldname] = [];
@@ -80,15 +81,17 @@ export default {
 
       if (!layout) {
         const fields = this.fields.map(df => df.fieldname);
-        layout = [{
-          columns: [{ fields }]
-        }];
+        layout = [
+          {
+            columns: [{ fields }]
+          }
+        ];
       }
 
       if (Array.isArray(layout)) {
         layout = {
           sections: layout
-        }
+        };
       }
       return layout;
     }

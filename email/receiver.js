@@ -1,4 +1,3 @@
-
 const frappe = require('frappejs');
 const ImapClient = require('emailjs-imap-client').default;
 const simpleParser = require('mailparser').simpleParser;
@@ -18,19 +17,21 @@ module.exports = {
     });
     account = account[0];
     const client = new ImapClient(account.imapHost, account.imapPort, {
-      useSecureTransport:true,
-      logLevel:'error',
+      useSecureTransport: true,
+      logLevel: 'error',
       auth: {
         user: account.email,
         pass: account.password
       }
     });
-    client.onerror = function (error) {console.log(error)};
+    client.onerror = function (error) {
+      console.log(error)
+    };
 
     client.connect().then(() => {
       client.listMessages('INBOX', '10:*', ['uid', 'flags', 'envelope', 'body[]']).then((messages) => {
         messages.forEach((message) => {
-          simpleParser(message['body[]']).then(async function (parsed){
+          simpleParser(message['body[]']).then(async function (parsed) {
             // message.envelope.from[0].name to DisplayName Field :TODO
             // ccEmailAddress ,bccEmailAddress UNAVAILABLE : TODO
             // save to , from in "," seperated and split at interface :TODO
@@ -53,13 +54,16 @@ module.exports = {
         });
       });
     });
+
     function sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     }
     async function demo() {
       await sleep(5000);
-      client.close().then(() => { console.log("Done Fetching!. CLOSED CONNECTION") });
+      client.close().then(() => {
+        console.log("Done Fetching!. CLOSED CONNECTION")
+      });
     }
-    demo();  
+    demo();
   }
 }

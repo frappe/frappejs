@@ -4,7 +4,7 @@ const validator = require('./validator');
 
 module.exports = {
   'sendMail': async function (mailDetails) {
-    if(!validator.validate(mailDetails.fromEmailAddress)){
+    if (!validator.validate(mailDetails.fromEmailAddress)) {
       console.log("invalid from email");
       return false;
     }
@@ -12,7 +12,7 @@ module.exports = {
     let account = await getConfig();
     for (var i = 0; i < account.length; i++) {
       if (mailDetails.fromEmailAddress == account[i].email) {
-        if(validator.validate(mailDetails.toEmailAddress)){
+        if (validator.validate(mailDetails.toEmailAddress)) {
           mailDetails = {
             from: mailDetails.fromEmailAddress,
             to: mailDetails.toEmailAddress,
@@ -30,8 +30,7 @@ module.exports = {
           });
           transporter.sendMail(mailDetails);
           return true;
-        }
-        else{
+        } else {
           console.log("Sender Email Invalid");
           return false;
         }
@@ -40,4 +39,4 @@ module.exports = {
     return false;
     console.log(mailDetails.fromEmailAddress + " NOT FOUND IN RECORDS");
   }
-};  
+};

@@ -26,10 +26,24 @@ class Forbidden extends BaseError {
 class ValueError extends ValidationError { }
 class Conflict extends ValidationError { }
 
+function throwError(message, error='ValidationError') {
+    const errorClass = {
+        'ValidationError': ValidationError,
+        'NotFound': NotFound,
+        'Forbidden': Forbidden,
+        'ValueError': ValueError,
+        'Conflict': Conflict
+    };
+    const err = new errorClass[error](message);
+    frappe.events.trigger('throw', { message, stackTrace: err.stack });
+    throw err;
+}
+
 module.exports = {
     ValidationError,
     ValueError,
     Conflict,
     NotFound,
-    Forbidden
+    Forbidden,
+    throw: throwError
 }

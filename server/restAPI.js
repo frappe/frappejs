@@ -79,11 +79,8 @@ module.exports = {
         }));
 
         const storage = multer.diskStorage({
-<<<<<<< HEAD
-            destination: 'dist/static/attachments/',
-=======
+
             destination: appConfig.staticPath + '/attachments/',
->>>>>>> Added delete file route
             filename: function (req, file, callback) {
               callback(null, Date.now() + path.extname(file.originalname));
             }

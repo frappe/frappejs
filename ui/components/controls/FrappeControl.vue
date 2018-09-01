@@ -25,7 +25,7 @@ import Password from './Password';
 import Select from './Select';
 import Table from './Table';
 import Text from './Text';
-import Time from './Time'
+import Time from './Time';
 
 export default {
   props: ['docfield', 'value', 'onlyInput', 'doc'],
@@ -41,25 +41,37 @@ export default {
         };
       }
 
-            return {
-                Autocomplete,
-                Check,
-                Code,
-                Currency,
-                Data,
-                Date,
-                DynamicLink,
-                File,
-                Float,
-                Int,
-                Link,
-                Password,
-                Select,
-                Table,
-                Text,
-                Time,
-            }[this.docfield.fieldtype];
-        }
+      return {
+        Autocomplete,
+        Check,
+        Code,
+        Currency,
+        Data,
+        Date,
+        DynamicLink,
+        File,
+        Float,
+        Int,
+        Link,
+        Password,
+        Select,
+        Table,
+        Text,
+        Time
+      }[this.docfield.fieldtype];
+    },
+    isDisabled() {
+      let disabled = this.docfield.disabled;
+
+      if (this.doc && this.doc.submitted) {
+        disabled = true;
+      }
+
+      if (this.docfield.formula && this.docfield.fieldtype !== 'Table') {
+        disabled = true;
+      }
+
+      return Boolean(disabled);
     }
   }
 };

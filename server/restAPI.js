@@ -1,9 +1,6 @@
 const frappe = require('frappejs');
 const path = require('path');
-const fs = require('fs');
 const multer = require('multer');
-const { getAppConfig, resolveAppDir } = require('../webpack/utils');
-const appConfig = getAppConfig();
 
 module.exports = {
     setup(app) {
@@ -48,6 +45,45 @@ module.exports = {
             return response.json(doc.getValidDict());
         }));
 
+        const upload = multer({
+          storage: multer.diskStorage({
+            destination: (req, file, cb) => {
+              cb(null, frappe.conf.staticPath)
+            },
+            filename: (req, file, cb) => {
+              const filename = file.originalname.split('.')[0];
+              const extension = path.extname(file.originalname);
+              const now = Date.now();
+              cb(null, filename + '-' + now + extension);
+            }
+          })
+        });
+
+        app.post('/api/upload/:doctype/:name/:fieldname', upload.array('files', 10), frappe.asyncHandler(async function(request, response) {
+            const files = request.files;
+            const { doctype, name, fieldname } = request.params;
+
+            let fileDocs = [];
+            for (let file of files) {
+            const doc = frappe.newDoc({
+                doctype: 'File',
+                name: path.join('/', file.path),
+                filename: file.originalname,
+                mimetype: file.mimetype,
+                size: file.size,
+                referenceDoctype: doctype,
+                referenceName: name,
+                referenceFieldname: fieldname
+            });
+            await doc.insert();
+
+            await frappe.db.setValue(doctype, name, fieldname, doc.name);
+            
+            fileDocs.push(doc.getValidDict());
+          }
+
+          return response.json(fileDocs);
+        }));
 
         // get document
         app.get('/api/resource/:doctype/:name', frappe.asyncHandler(async function(request, response) {
@@ -76,28 +112,6 @@ module.exports = {
                 await doc.delete();
             }
             return response.json({});
-        }));
-
-        const storage = multer.diskStorage({
-
-            destination: appConfig.staticPath + '/attachments/',
-            filename: function (req, file, callback) {
-              callback(null, Date.now() + path.extname(file.originalname));
-            }
-        });
-        const upload = multer({ storage: storage });
-
-        app.post('/api/upload', upload.array('attachments') ,frappe.asyncHandler(async function(request, response) {
-            let attachments = request.files;
-            let attachmentsPath = [];
-            if(attachments){
-                for(let attachment of attachments){
-                    attachmentsPath.push(attachment.path);
-                }
-                response.json(attachmentsPath);
-            }else {
-                response.json('failed');
-            }
         }));
 
         app.delete('/api/upload/:folder/:filename', frappe.asyncHandler(async function(request, response){

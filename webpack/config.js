@@ -83,19 +83,11 @@ function getConfig() {
             new plugins.CaseSensitivePaths(),
             new plugins.NamedModules(),
             new plugins.HotModuleReplacement(),
-<<<<<<< HEAD
-            // new plugins.FriendlyErrors({
-            //     compilationSuccessInfo: {
-            //         messages: [`FrappeJS server started at http://${appConfig.dev.devServerHost}:${appConfig.dev.devServerPort}`],
-            //     },
-            // }),
-=======
             new plugins.FriendlyErrors({
                 compilationSuccessInfo: {
                     messages: [`FrappeJS server started at http://${appConfig.dev.devServerHost}:${appConfig.dev.devServerPort}`],
                 },
             }),
->>>>>>> 1d0671b3f81711564efbb9b3a845a6c7ecbd057f
             new plugins.Progress()
         ],
         optimization: {

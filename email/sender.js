@@ -8,6 +8,7 @@ module.exports = {
       console.log("invalid from email");
       return false;
     }
+    //console.log(mailDetails);
 
     let account = await getConfig();
     for (var i = 0; i < account.length; i++) {
@@ -16,10 +17,14 @@ module.exports = {
           mailDetails = {
             from: mailDetails.fromEmailAddress,
             to: mailDetails.toEmailAddress,
+            replyTo:mailDetails.toEmailAddress,
+            inReplyTo:mailDetails.replyId,
+            references:[mailDetails.replyId],
             cc: mailDetails.ccEmailAddress,
             bcc: mailDetails.bccEmailAddress,
             subject: mailDetails.subject,
             text: mailDetails.bodyText,
+            //html:"",
           };
           let transporter = nodemailer.createTransport({
             service: 'gmail',

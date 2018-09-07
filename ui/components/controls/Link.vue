@@ -101,10 +101,9 @@ export default {
     },
     sort() {
       return (a, b) => {
-        a=a.toLowerCase();
-        b=b.toLowerCase();
-        console.log(a);
-        console.log(b);
+        a = a.toLowerCase();
+        b = b.toLowerCase();
+        
         if (a.value === '__newItem') {
           return 1;
         }

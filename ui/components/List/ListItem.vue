@@ -1,5 +1,5 @@
 <template>
-    <div :class="classList" @click="$emit('clickItem')">
+    <div :class="classList" @click.self="$emit('clickItem')">
         <div class="custom-control custom-checkbox d-flex">
             <input type="checkbox" class="custom-control-input" :id="id"
                 :value="isChecked" @change="$emit('checkItem', isChecked)"

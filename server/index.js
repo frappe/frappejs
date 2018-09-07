@@ -42,10 +42,8 @@ module.exports = {
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({ extended: true }));
 
-        console.log(frappe.conf)
         app.use(express.static(frappe.conf.distPath));
 
-        console.log(frappe.conf.staticPath)
         app.use('/static', express.static(frappe.conf.staticPath))
 
         app.use(morgan('tiny'));

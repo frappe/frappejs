@@ -4,7 +4,7 @@
             <input type="checkbox" class="custom-control-input" :id="id"
                 :value="isChecked" @change="$emit('checkItem', isChecked)"
             >
-            <label  class="custom-control-label" :for="id"></label>
+            <label class="custom-control-label" :for="id"></label>
         </div>
         <slot></slot>
     </div>

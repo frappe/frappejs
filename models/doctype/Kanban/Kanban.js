@@ -1,17 +1,3 @@
-let options = [];
-let referencedoctype = '';
-
-async function populateFieldsAndOptions(doctype){
-  const meta = await frappe.getMeta(doctype);
-  referencedoctype = doctype;
-  console.log(referencedoctype);
-  meta.fields.forEach(field => {
-    if(field.fieldtype==='Select')
-    options.push(field.fieldname)
-  });
-  return meta.fields;
-};
-
 module.exports = {
     name: 'Kanban',
     doctype: 'DocType',
@@ -36,10 +22,9 @@ module.exports = {
         "fieldname": "sortby",
         "label": "Sort By",
         "fieldtype": "Select",
-        "options": options,
+        "options": [],
         "required": 1,
       }
     ],
-    populateFieldsAndOptions
 };
   

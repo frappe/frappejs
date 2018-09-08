@@ -11,13 +11,18 @@
                 <div :key="key" v-for="(field,key) in fields">
                 <label>
                   {{field.label}}
-                  <input v-if="fieldtypes[field.fieldtype] === 'text'" type="text" />
-                  <select v-if="fieldtypes[field.fieldtype] === 'select'">
+                  <input v-if="fieldtypes[field.fieldtype] === 'text'" type="text" v-model="configdata[field.fieldname]"/>
+                  <select v-if="fieldtypes[field.fieldtype] === 'select'" v-model="configdata.sortby">
                     <option v-for="(option) in options" :key="option" :value="option">
                       {{option}}
                     </option>
                   </select>  
                 </label>
+                </div>
+                <div>
+                  <button @click="submit" type="submit" value="submit">
+                    submit
+                  </button>
                 </div>
               </form>
             </div>
@@ -39,6 +44,29 @@ export default {
   props: ['refdoctype', 'closeKanbanModal'],
   created() {
     this.doc = new Observable();
+  },
+  data() {
+    return {
+      configdata: {
+        kanbanname: '',
+        referencedoctype: this.refdoctype,
+        sortby: ''
+      }
+    };
+  },
+  methods: {
+    async submit(e) {
+      e.preventDefault();
+      console.log('submit');
+      const { kanbanname, referencedoctype, sortby } = this.configdata;
+      console.log(kanbanname, referencedoctype, sortby);
+      const newDoc = await frappe.getNewDoc('Kanban');
+      Object.keys(this.configdata).forEach(
+        field => (newDoc[field] = this.configdata[field])
+      );
+      console.log('newdoc', newDoc);
+      newDoc.insert();
+    }
   },
   computed: {
     meta() {
@@ -62,26 +90,10 @@ export default {
       return options;
     }
   },
-  methods: {
-    submit() {
-      const { kanbanname, sortby, referencedoctype } = this.doc;
-      console.log(kanbanname, sortby, referencedoctype);
-      console.log(this.doc);
-    }
-  },
   created() {
     console.log(this.meta.fields);
     console.log(this.options);
-  }
-};
-</script>
-  },
-  methods: {
-    submit() {
-      const { kanbanname, sortby, referencedoctype } = this.doc;
-      console.log(kanbanname, sortby, referencedoctype);
-      console.log(this.doc);
-    }
+    console.log('data', this.data);
   }
 };
 </script>

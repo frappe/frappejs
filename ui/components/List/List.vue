@@ -9,6 +9,7 @@
         </span>
       </list-item>
     </ul>
+    <kanban-modal v-if="showKanbanModal" :refdoctype="doctype" @closeKanbanModal='closeKanbanModal' />
   </div>
 </template>
 <script>
@@ -24,13 +25,15 @@ export default {
   props: ['doctype'],
   components: {
     ListActions,
-    ListItem
+    ListItem,
+    KanbanModal
   },
   data() {
     return {
       data: [],
       checkList: [],
-      activeItem: ''
+      activeItem: '',
+      showKanbanModal: false
     };
   },
   computed: {
@@ -109,25 +112,29 @@ export default {
     getIndicatorColor(doc) {
       return this.meta.getIndicatorColor(doc);
     },
-    async createKanban() {
+    createKanban() {
       // const kanban = frappe.getMeta('Kanban');
       // const fields = kanban.fields;
       // const newDoc = await frappe.getNewDoc('Kanban');
-      KanbanModel.populateFieldsAndOptions(this.doctype).then(
-        refDoctypeFields => {
-          console.log('promise resolved');
-          this.$modal.show({
-            component: KanbanModal,
-            modalProps: {
-              title: 'Create Kanban'
-            },
-            props: {
-              refdoctype: this.doctype
-              // doc: newDoc
-            }
-          });
-        }
-      );
+      // KanbanModel.populateFieldsAndOptions(this.doctype).then(
+      //   refDoctypeFields => {
+      //     this.$modal.show({
+      //       component: KanbanModal,
+      //       modalProps: {
+      //         title: 'Create Kanban'
+      //       },
+      //       props: {
+      //         refdoctype: this.doctype
+      //         // doc: newDoc
+      //       }
+      //     });
+      //   }
+      // );
+      console.log('creating kanban');
+      this.showKanbanModal = true;
+    },
+    closeKanbanModal() {
+      this.showKanbanModal = false;
     }
   }
 };

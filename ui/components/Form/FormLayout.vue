@@ -26,8 +26,6 @@ export default {
     const dataObj = {};
     for (let df of this.fields) {
       dataObj[df.fieldname] = this.doc[df.fieldname];
-      console.log(dataObj[df.fieldname]);
-
       if (df.fieldtype === 'Table' && !dataObj[df.fieldname]) {
         dataObj[df.fieldname] = [];
       }

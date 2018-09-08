@@ -30,7 +30,6 @@ module.exports = {
         "fieldname": "referencedoctype",
         "label": "Reference Doctype",
         "fieldtype": "Data",
-        "value": 'something',
         "required": 1
       },
       {

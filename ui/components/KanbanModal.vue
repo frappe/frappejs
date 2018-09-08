@@ -3,16 +3,16 @@
       <div class="modal-mask">
         <div class="modal-wrapper">
           <div class="modal-container">
-            <div class="modal-header">
+            <h3 class="modal-header">
               Create Kanban for {{refdoctype}}
-            </div>
+            </h3>
             <div class="modal-body">
               <form>
                 <div :key="key" v-for="(field,key) in fields">
                 <label>
                   {{field.label}}
-                  <input v-if="fieldtypes[field.fieldtype] === 'text'" type="text" v-model="configdata[field.fieldname]"/>
-                  <select v-if="fieldtypes[field.fieldtype] === 'select'" v-model="configdata.sortby">
+                  <input class="form-control" :disabled="disabled(field)" v-if="fieldtypes[field.fieldtype] === 'text'" type="text" v-model="configdata[field.fieldname]"/>
+                  <select class="form-control" v-if="fieldtypes[field.fieldtype] === 'select'" v-model="configdata.sortby">
                     <option v-for="(option) in options" :key="option" :value="option">
                       {{option}}
                     </option>
@@ -20,14 +20,14 @@
                 </label>
                 </div>
                 <div>
-                  <button @click="submit" type="submit" value="submit">
+                  <button class="btn btn-primary btn-lg" @click="submit" type="submit" value="submit" :disabled="submitdisabled">
                     submit
                   </button>
                 </div>
               </form>
             </div>
             <div class="modal-footer">
-              <button @click="$emit('closeKanbanModal')">Close</button>
+              <button class="btn btn-danger btn-lg" @click="$emit('closeKanbanModal')">Close</button>
             </div>
           </div>
         </div>
@@ -66,6 +66,7 @@ export default {
       );
       console.log('newdoc', newDoc);
       newDoc.insert();
+      this.$emit('closeKanbanModal');
     }
   },
   computed: {
@@ -88,12 +89,20 @@ export default {
         if (field.fieldtype === 'Select') options.push(field.fieldname);
       });
       return options;
+    },
+    disabled() {
+      return field => {
+        return field.fieldname === 'referencedoctype' ? true : false;
+      };
+    },
+    submitdisabled() {
+      let isInvalid = false;
+      const configFields = Object.keys(this.configdata);
+      configFields.forEach(field => {
+        if (this.configdata[field] === '') isInvalid = true;
+      });
+      return isInvalid;
     }
-  },
-  created() {
-    console.log(this.meta.fields);
-    console.log(this.options);
-    console.log('data', this.data);
   }
 };
 </script>

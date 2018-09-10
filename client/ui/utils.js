@@ -14,7 +14,7 @@ module.exports = {
                 id: field.fieldname || frappe.slug(field.label),
                 field: field,
                 content: field.label,
-                editable: true,
+                editable: false,
                 sortable: false,
                 resizable: true,
                 dropdown: false,

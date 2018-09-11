@@ -55,6 +55,7 @@ export default {
 
       for(let column of columns) {
          column.editable = false;
+
       }
 
       if (this.datatable) {

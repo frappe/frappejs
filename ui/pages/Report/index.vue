@@ -53,6 +53,10 @@ export default {
         columns = this.reportColumns;
       }
 
+      for(let c of columns) {
+         c.editable = false;
+      }
+
       if (this.datatable) {
         this.datatable.refresh(rows, columns);
       } else {

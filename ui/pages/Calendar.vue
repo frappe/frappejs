@@ -67,15 +67,12 @@ async updateList(query = null) {
           title: ['like', query]
         };
       }
-
       const indicatorField = this.hasIndicator
         ? this.meta.indicators.key
         : null;
-
       const fields = [
         "title", "startDate","startTime","endDate","endTime","name"
       ].filter(Boolean);
-
       const allEvents = await frappe.db.getAll({
         doctype: "Event",
         fields: fields,
@@ -84,15 +81,11 @@ async updateList(query = null) {
       this.events=[];
         for(var i=0;i<allEvents.length;i++){
           var event = {};
-
           event.title = allEvents[i].title;
           event.id = allEvents[i].name;
-
           event.start = DateTime.fromISO(allEvents[i].startDate+"T"+allEvents[i].startTime).toISO()
           event.end = DateTime.fromISO(allEvents[i].endDate+"T"+allEvents[i].endTime).toISO()
-
           this.events.push(event);
-
         }
     },
     async eventDrop(event) {

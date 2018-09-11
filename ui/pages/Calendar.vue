@@ -140,7 +140,7 @@ async updateList(query = null) {
     },
 
     eventSelected(event) {
-      this.selected = event;
+      this.selected = event; 
     },
 
     eventCreated(...test) {
@@ -180,7 +180,8 @@ async updateList(query = null) {
 </script>
 
 <style>
-@import '~fullcalendar/dist/fullcalendar.css';
+/* @import '~fullcalendar/dist/fullcalendar.css'; */
+@import 'added.css';
 #calendarFull {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

@@ -60,25 +60,25 @@ module.exports = {
         });
 
         app.post('/api/upload/:doctype/:name/:fieldname', upload.array('files', 10), frappe.asyncHandler(async function(request, response) {
-          const files = request.files;
-          const { doctype, name, fieldname } = request.params;
+            const files = request.files;
+            const { doctype, name, fieldname } = request.params;
 
-          let fileDocs = [];
-          for (let file of files) {
+            let fileDocs = [];
+            for (let file of files) {
             const doc = frappe.newDoc({
-              doctype: 'File',
-              name: path.join('/', file.path),
-              filename: file.originalname,
-              mimetype: file.mimetype,
-              size: file.size,
-              referenceDoctype: doctype,
-              referenceName: name,
-              referenceFieldname: fieldname
+                doctype: 'File',
+                name: path.join('/', file.path),
+                filename: file.originalname,
+                mimetype: file.mimetype,
+                size: file.size,
+                referenceDoctype: doctype,
+                referenceName: name,
+                referenceFieldname: fieldname
             });
             await doc.insert();
 
             await frappe.db.setValue(doctype, name, fieldname, doc.name);
-
+            
             fileDocs.push(doc.getValidDict());
           }
 
@@ -112,6 +112,18 @@ module.exports = {
                 await doc.delete();
             }
             return response.json({});
+        }));
+
+        app.delete('/api/upload/:folder/:filename', frappe.asyncHandler(async function(request, response){
+            //delete local saved file
+            const filePath = appConfig.staticPath +'/'+ request.params.folder +'/'+ request.params.filename;
+            fs.unlink(filePath, function (err) {
+                if (err){
+                    response.status(500).json(err)
+                } else {
+                    response.json('Deleted');
+                }
+            });
         }));
 
     }

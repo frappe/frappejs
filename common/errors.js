@@ -1,3 +1,5 @@
+const frappe = require('frappejs');
+
 class BaseError extends Error {
     constructor(statusCode, ...params) {
         super(...params);
@@ -38,6 +40,8 @@ function throwError(message, error='ValidationError') {
     frappe.events.trigger('throw', { message, stackTrace: err.stack });
     throw err;
 }
+
+frappe.throw = throwError;
 
 module.exports = {
     ValidationError,

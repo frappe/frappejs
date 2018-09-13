@@ -1,7 +1,7 @@
 const backends = {};
 backends.sqlite = require('frappejs/backends/sqlite');
 //backends.mysql = require('frappejs/backends/mysql');
-
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -18,7 +18,10 @@ const auth = require('./../auth/auth')();
 const morgan = require('morgan');
 const { addWebpackMiddleware } = require('../webpack/serve');
 const { getAppConfig } = require('../webpack/utils');
-const appConfig = getAppConfig();
+const quickthumb = require('quickthumb')
+
+
+frappe.conf = getAppConfig();
 
 require.extensions['.html'] = function (module, filename) {
     module.exports = fs.readFileSync(filename, 'utf8');
@@ -41,9 +44,8 @@ module.exports = {
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({ extended: true }));
 
-        for (let staticPath of [appConfig.distPath, appConfig.staticPath]) {
-          app.use(express.static(staticPath));
-        }
+        app.use(express.static(frappe.conf.distPath));
+        app.use('/static', quickthumb.static(path.resolve(frappe.conf.staticPath), { type: 'resize' }));
 
         app.use(morgan('tiny'));
 

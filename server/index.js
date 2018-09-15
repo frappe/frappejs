@@ -26,8 +26,6 @@ require.extensions['.html'] = function (module, filename) {
     module.exports = fs.readFileSync(filename, 'utf8');
 };
 
-process.env.NODE_ENV = 'development';
-
 module.exports = {
     async start({backend, connectionParams, models, authConfig=null}) {
         await this.init();
@@ -44,6 +42,7 @@ module.exports = {
         app.use(bodyParser.urlencoded({ extended: true }));
 
         app.use(express.static(frappe.conf.distPath));
+
         app.use('/static', express.static(frappe.conf.staticPath))
 
         app.use(morgan('tiny'));

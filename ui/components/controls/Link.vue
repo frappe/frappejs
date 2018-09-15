@@ -18,9 +18,9 @@ export default {
     async getList(query) {
       const list = await frappe.db.getAll({
         doctype: this.getTarget(),
-        filters: {
+        filters: query ? {
           keywords: ['like', query]
-        },
+        } : null,
         fields: ['name'],
         limit: 50
       });
@@ -101,6 +101,9 @@ export default {
     },
     sort() {
       return (a, b) => {
+        a = a.toLowerCase();
+        b = b.toLowerCase();
+        
         if (a.value === '__newItem') {
           return 1;
         }

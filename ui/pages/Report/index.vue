@@ -2,7 +2,7 @@
     <div>
         <div class="p-4">
             <h4 class="pb-2">{{ reportConfig.title }}</h4>
-            <report-filters v-if="reportConfig.filterFields.length" :filters="reportConfig.filterFields" :filterDefaults="filters" @change="getReportData"></report-filters>
+            <report-filters v-if="filtersExists" :filters="reportConfig.filterFields" :filterDefaults="filters" @change="getReportData"></report-filters>
             <div class="pt-2" ref="datatable" v-once></div>
         </div>
         <not-found v-if="!reportConfig" />
@@ -22,20 +22,45 @@ export default {
       return utils.convertFieldsToDatatableColumns(
         this.reportConfig.getColumns()
       );
+    },
+    filtersExists() {
+      return (this.reportConfig.filterFields || []).length;
     }
   },
   methods: {
-    getReportData(filters) {
-      frappe.methods[this.reportConfig.method](filters).then(data => {
-        if (this.datatable) {
-          this.datatable.refresh(data || []);
-        } else {
-          this.datatable = new DataTable(this.$refs.datatable, {
-            columns: this.reportColumns,
-            data: data || []
-          });
-        }
+    async getReportData(filters) {
+      let data = await frappe.call({
+          method: this.reportConfig.method,
+          args: filters
       });
+
+      let rows, columns;
+      if (data.rows) {
+        rows = data.rows;
+      } else {
+        rows = data;
+      }
+
+      if (data.columns) {
+        columns = data.columns;
+      }
+
+      if (!rows) {
+        rows = [];
+      }
+
+      if (!columns) {
+        columns = this.reportColumns;
+      }
+
+      if (this.datatable) {
+        this.datatable.refresh(rows, columns);
+      } else {
+        this.datatable = new DataTable(this.$refs.datatable, {
+          columns: columns,
+          data: rows
+        });
+      }
     }
   },
   components: {

@@ -27,13 +27,26 @@ module.exports = {
       console.log(error)
     };
 
+    var MailBoxMap = {
+      "SENT": "[Gmail]/Sent Mail",
+      "INBOX": "INBOX", // TODO: FILTER to find only unseen
+      "STARRED": "[Gmail]/Starred", // REM
+    };
+
+    var sent = 0;
+    // FIX THIS
+    if (syncOption == "SENT") {
+      sent = 1;
+    }
+    console.log()
     client.connect().then(() => {
-      client.listMessages('INBOX', '10:*', ['uid', 'flags', 'envelope', 'body[]']).then((messages) => {
+      client.listMessages(MailBoxMap[syncOption], '1:*', ['uid', 'flags', 'envelope', 'body[]']).then((messages) => {
         messages.forEach((message) => {
           simpleParser(message['body[]']).then(async function (parsed) {
             // message.envelope.from[0].name to DisplayName Field :TODO
             // ccEmailAddress ,bccEmailAddress UNAVAILABLE : TODO
             // save to , from in "," seperated and split at interface :TODO
+
             var mailObject = {
               doctype: 'Email',
               name: message.envelope['message-id'],
@@ -45,7 +58,7 @@ module.exports = {
               subject: message.envelope.subject,
               bodyHtml: parsed.html,
               bodyText: parsed.text,
-              sent: 0
+              sent: sent
             }
             if (await frappe.db.exists('Email', mailObject.name) == false) {
               await frappe.insert(mailObject);

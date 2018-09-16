@@ -7,7 +7,6 @@ module.exports = {
     email,
     syncOption
   }) => {
-    // could be replaced with getDoc if account name is set same as email
     let account = await frappe.db.getAll({
       doctype: 'EmailAccount',
       fields: ['email', 'password', 'imapHost', 'imapPort', 'initialDate'],
@@ -35,19 +34,22 @@ module.exports = {
             // message.envelope.from[0].name to DisplayName Field :TODO
             // ccEmailAddress ,bccEmailAddress UNAVAILABLE : TODO
             // save to , from in "," seperated and split at interface :TODO
-            await frappe.insert({
+            var mailObject = {
               doctype: 'Email',
               name: message.envelope['message-id'],
               fromEmailAddress: message.envelope.from[0].address,
               toEmailAddress: message.envelope.to[0].address,
-              //ccEmailAddress: message.envelope.cc[0].address,
-              //bccEmailAddress: message.envelope.bcc[0].address,
-              date: message.envelope.date,
+              // ccEmailAddress: message.envelope.cc[0].address,
+              // bccEmailAddress: message.envelope.bcc[0].address,
+              date: new Date(message.envelope.date),
               subject: message.envelope.subject,
               bodyHtml: parsed.html,
               bodyText: parsed.text,
-              sent: 0,
-            })
+              sent: 0
+            }
+            if (await frappe.db.exists('Email', mailObject.name) == false) {
+              await frappe.insert(mailObject);
+            }
           }).catch(function (err) {
             console.log('An error occurred:', err.message);
           });
@@ -58,12 +60,12 @@ module.exports = {
     function sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     }
-    async function demo() {
+    async function wait() {
       await sleep(5000);
       client.close().then(() => {
         console.log("Done Fetching!. CLOSED CONNECTION")
       });
     }
-    demo();
+    wait();
   }
 }

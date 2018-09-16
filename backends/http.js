@@ -43,7 +43,7 @@ module.exports = class HTTPClient extends Observable {
     })
   }
 
-  async getAll({ doctype, fields, filters, start, limit, sortBy, order }) {
+  async getAll({ doctype, fields, filters, start, limit, orderBy, order }) {
     let url = this.getURL('/api/resource', doctype);
 
     url = url + '?' + frappe.getQueryString({
@@ -51,7 +51,7 @@ module.exports = class HTTPClient extends Observable {
       filters: JSON.stringify(filters),
       start: start,
       limit: limit,
-      sortBy: sortBy,
+      orderBy: orderBy,
       order: order
     });
 

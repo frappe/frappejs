@@ -18,7 +18,7 @@ module.exports = {
                 filters: request.query.filters,
                 start: request.query.start || 0,
                 limit: request.query.limit || 20,
-                order_by: request.query.order_by,
+                orderBy: request.query.orderBy,
                 order: request.query.order
             });
 

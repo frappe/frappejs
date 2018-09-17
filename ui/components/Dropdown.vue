@@ -1,5 +1,5 @@
 <template>
-  <div class="dropdown show">
+  <div class="dropdown show" ref="dropdownMenu">
       <button
         :id="_uid"
         class="btn btn-sm btn-light dropdown-toggle"
@@ -29,6 +29,22 @@ export default {
     return {
       isShown: false
     }
+  },
+  methods:{
+      documentClick(e){
+        let el = this.$refs.dropdownMenu
+        let target = e.target
+        if ( ( el !== target) && (!el.contains(target)) ) {
+          this.isShown=false
+        }
+      }
+    },
+    created () {
+      document.addEventListener('click', this.documentClick)
+    },
+    destroyed () {
+    // important to clean up!!
+    document.removeEventListener('click', this.documentClick)
   }
 };
 </script>
@@ -44,4 +60,3 @@ $dropdown-link-active-bg: $gray-300;
 }
 
 </style>
-

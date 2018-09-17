@@ -50,13 +50,16 @@ module.exports = class BaseDocument extends Observable {
     }
 
     async applyChange(fieldname) {
-        if (await this.applyFormula()) {
-            // multiple changes
-            await this.trigger('change', { doc: this });
-        } else {
-            // no other change, trigger control refresh
-            await this.trigger('change', { doc: this, fieldname: fieldname });
-        }
+      const docChangedByFormula = await this.applyFormula();
+      const docChangedByFetch = await this.applyFetch();
+
+      if (docChangedByFormula || docChangedByFetch) {
+          // multiple changes
+          await this.trigger('change', { doc: this });
+      } else {
+          // no other change, trigger control refresh
+          await this.trigger('change', { doc: this, fieldname: fieldname });
+      }
     }
 
     setDefaults() {
@@ -247,12 +250,52 @@ module.exports = class BaseDocument extends Observable {
         return true;
     }
 
+    async applyFetch() {
+        if (!this.meta.hasFetch()) {
+            return false;
+        }
+
+        let doc = this;
+
+        // children
+        for (let tablefield of this.meta.getTableFields()) {
+            let fetchFields = frappe.getMeta(tablefield.childtype).getFetchFields();
+            if (fetchFields.length) {
+
+                // for each row
+                for (let row of this[tablefield.fieldname]) {
+                    for (let field of fetchFields) {
+                        const val = await field.fetch(row, doc);
+                        if (row[field.fieldname]) {
+                        }
+                        else {
+                          row[field.fieldname] = val;
+                        }
+                    }
+                }
+            }
+        }
+
+        // parent
+        for (let field of this.meta.getFetchFields()) {
+            const val = await field.fetch(doc);
+            if (doc[field.fieldname]) {
+            }
+            else {
+              doc[field.fieldname] = val;
+            }
+        }
+
+        return true;
+    }
+
     async commit() {
         // re-run triggers
         this.setStandardValues();
         this.setKeywords();
         this.setChildIdx();
         await this.applyFormula();
+        await this.applyFetch();
         await this.trigger('validate');
     }
 

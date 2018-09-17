@@ -66,6 +66,13 @@ module.exports = class BaseMeta extends BaseDocument {
         return this._formulaFields;
     }
 
+    getFetchFields() {
+        if (this._fetchFields===undefined) {
+            this._fetchFields = this.fields.filter(field => field.fetch);
+        }
+        return this._fetchFields;
+    }
+
     hasFormula() {
         if (this._hasFormula===undefined) {
             this._hasFormula = false;
@@ -81,6 +88,23 @@ module.exports = class BaseMeta extends BaseDocument {
             }
         }
         return this._hasFormula;
+    }
+
+    hasFetch() {
+        if (this._hasFetch===undefined) {
+            this._hasFetch = false;
+            if (this.getFetchFields().length) {
+                this._hasFetch = true;
+            } else {
+                for (let tablefield of this.getTableFields()) {
+                    if (frappe.getMeta(tablefield.childtype).getFetchFields().length) {
+                        this._hasFetch = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return this._hasFetch;
     }
 
     async set(fieldname, value) {

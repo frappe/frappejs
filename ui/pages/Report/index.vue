@@ -57,7 +57,6 @@ export default {
          column.editable = false;
       }
 
-
       if (this.datatable) {
         this.datatable.refresh(rows, columns);
       } else {
@@ -66,7 +65,6 @@ export default {
           data: rows
         });
       }
-      window.datatable = this.datatable
     }
   },
   components: {

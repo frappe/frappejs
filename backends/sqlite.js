@@ -178,12 +178,20 @@ module.exports = class sqliteDatabase extends Database {
       set ${assigns.join(', ')} where name=?`, values);
   }
 
-  getAll({ doctype, fields, filters, start, limit, orderBy = 'modified', groupBy, order = 'desc' } = {}) {
+  getAll({ doctype, fields, filters, start, limit, orderBy, groupBy, order = 'desc' } = {}) {
+    const meta = frappe.getMeta(doctype);
     if (!fields) {
-      fields = frappe.getMeta(doctype).getKeywordFields();
+      fields = meta.getKeywordFields();
     }
     if (typeof fields === 'string') {
       fields = [fields];
+    }
+    if (!orderBy) {
+      if (meta.isChild) {
+        orderBy = 'name';
+      } else {
+        orderBy = 'modified'
+      }
     }
 
     return new Promise((resolve, reject) => {

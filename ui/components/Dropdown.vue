@@ -31,21 +31,20 @@ export default {
     }
   },
   methods:{
-      documentClick(e){
-        let el = this.$refs.dropdownMenu
-        let target = e.target
-        if ( ( el !== target) && (!el.contains(target)) ) {
-          this.isShown=false
+      documentClick(e) {
+        let el = this.$refs.dropdownMenu;
+        let target = e.target;
+        if ((el !== target) && (!el.contains(target))) {
+          this.isShown = false;
         }
       }
     },
     created () {
-      document.addEventListener('click', this.documentClick)
+      document.addEventListener('click', this.documentClick);
     },
     destroyed () {
-    // important to clean up!!
-    document.removeEventListener('click', this.documentClick)
-  }
+      document.removeEventListener('click', this.documentClick);
+    }
 };
 </script>
 <style lang="scss">

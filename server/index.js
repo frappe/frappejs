@@ -1,4 +1,4 @@
-const backends = {};
+// const backends = {};
 backends.sqlite = require('frappejs/backends/sqlite');
 //backends.mysql = require('frappejs/backends/mysql');
 const path = require('path');
@@ -18,24 +18,9 @@ const auth = require('./../auth/auth')();
 const morgan = require('morgan');
 const { addWebpackMiddleware } = require('../webpack/serve');
 const { getAppConfig } = require('../webpack/utils');
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-frappe.conf = getAppConfig();
-=======
-const appConfig = getAppConfig();
-<<<<<<< HEAD
-=======
->>>>>>> Added image upload to rest api
->>>>>>> dde2752... Added image upload to rest api
-=======
->>>>>>> d09e216... Add file-loader and indexEntry
-=======
 const quickthumb = require('quickthumb')
 
-
 frappe.conf = getAppConfig();
->>>>>>> 7ac6628... Thumbnail creation with imagemagick
 
 require.extensions['.html'] = function (module, filename) {
     module.exports = fs.readFileSync(filename, 'utf8');
@@ -57,12 +42,7 @@ module.exports = {
         app.use(bodyParser.urlencoded({ extended: true }));
 
         app.use(express.static(frappe.conf.distPath));
-<<<<<<< HEAD
-
-        app.use('/static', express.static(frappe.conf.staticPath))
-=======
         app.use('/static', quickthumb.static(path.resolve(frappe.conf.staticPath), { type: 'resize' }));
->>>>>>> 7ac6628... Thumbnail creation with imagemagick
 
         app.use(morgan('tiny'));
 

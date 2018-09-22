@@ -1,9 +1,6 @@
 const frappe = require('frappejs');
 const path = require('path');
-const fs = require('fs');
 const multer = require('multer');
-const { getAppConfig, resolveAppDir } = require('../webpack/utils');
-const appConfig = getAppConfig();
 
 module.exports = {
     setup(app) {
@@ -116,45 +113,5 @@ module.exports = {
             }
             return response.json({});
         }));
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
-        const storage = multer.diskStorage({
-            destination: appConfig.staticPath + '/attachments/',
-            filename: function (req, file, callback) {
-              callback(null, Date.now() + path.extname(file.originalname));
-            }
-        });
-        const upload = multer({ storage: storage });
-
->>>>>>> 5baefe3... Add file-loader and indexEntry
-        app.post('/api/upload', upload.array('attachments') ,frappe.asyncHandler(async function(request, response) {
-            let attachments = request.files;
-            let attachmentsPath = [];
-            if(attachments){
-                for(let attachment of attachments){
-                    attachmentsPath.push(attachment.path);
-                }
-                response.json(attachmentsPath);
-            }else {
-                response.json('failed');
-            }
-        }));
-
-        app.delete('/api/upload/:folder/:filename', frappe.asyncHandler(async function(request, response){
-            //delete local saved file
-            const filePath = appConfig.staticPath +'/'+ request.params.folder +'/'+ request.params.filename;
-            fs.unlink(filePath, function (err) {
-                if (err){
-                    response.status(500).json(err)
-                } else {
-                    response.json('Deleted');
-                }
-            });
-        }));
-
->>>>>>> dde2752... Added image upload to rest api
     }
 };

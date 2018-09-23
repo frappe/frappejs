@@ -25,11 +25,6 @@ async function getPDFForElectron(doctype, name) {
     shell.openItem(filepath);
 }
 
-function setupExpressRoute() {
-    if (!frappe.app) return;
-    frappe.app.post('/api/method/pdf', frappe.asyncHandler(handlePDFRequest));
-}
-
 async function handlePDFRequest(req, res) {
     const args = req.body;
     const { doctype, name } = args;
@@ -48,6 +43,6 @@ async function handlePDFRequest(req, res) {
 
 module.exports = {
     makePDF,
-    setupExpressRoute,
-    getPDFForElectron
+    getPDFForElectron,
+    handlePDFRequest
 }

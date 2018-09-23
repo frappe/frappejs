@@ -18,6 +18,7 @@
     "body-parser": "^1.18.2",
     "bootstrap": "^4.1.2",
     "case-sensitive-paths-webpack-plugin": "^2.1.2",
+    "chokidar": "^2.0.4",
     "codemirror": "^5.35.0",
     "commander": "^2.13.0",
     "cors": "^2.8.4",

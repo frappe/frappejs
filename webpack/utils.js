@@ -23,13 +23,15 @@ function getAppDir() {
 }
 
 function getAppConfig() {
+  const appDir = getAppDir();
   const defaults = {
+    appDir,
     dev: {
       devServerHost: 'localhost',
       devServerPort: 8000
     }
   }
-  const appConfig = require(path.resolve(getAppDir(), frappeConf));
+  const appConfig = require(path.resolve(appDir, frappeConf));
   return deepmerge(defaults, appConfig);
 }
 

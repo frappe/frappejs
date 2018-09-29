@@ -83,11 +83,11 @@ function getConfig() {
             new plugins.CaseSensitivePaths(),
             new plugins.NamedModules(),
             new plugins.HotModuleReplacement(),
-            // new plugins.FriendlyErrors({
-            //     compilationSuccessInfo: {
-            //         messages: [`FrappeJS server started at http://${appConfig.dev.devServerHost}:${appConfig.dev.devServerPort}`],
-            //     },
-            // }),
+            new plugins.FriendlyErrors({
+                compilationSuccessInfo: {
+                    messages: [`FrappeJS server started at http://${appConfig.dev.devServerHost}:${appConfig.dev.devServerPort}`],
+                },
+            }),
             new plugins.Progress()
         ],
         optimization: {
@@ -96,7 +96,7 @@ function getConfig() {
         devServer: {
             // contentBase: './dist', // dist path is directly configured in express
             hot: true,
-            quiet: false
+            quiet: true
         },
         node: {
             // prevent webpack from injecting useless setImmediate polyfill because Vue

@@ -14,6 +14,7 @@ module.exports = {
     UserRole: require('./doctype/UserRole/UserRole.js'),
     File: require('./doctype/File/File.js'),
     Kanban: require('./doctype/Kanban/Kanban.js'),
-    KanbanList: require('./doctype/KanbanList/KanbanList.js')
+    KanbanList: require('./doctype/KanbanList/KanbanList.js'),
+    KanbanCard: require('./doctype/KanbanCard/KanbanCard.js')
   }
 };

@@ -12,8 +12,8 @@
                 <label>
                   {{field.label}}
                   <input class="form-control" :disabled="disabled(field)" v-if="fieldtypes[field.fieldtype] === 'text'" type="text" v-model="configdata[field.fieldname]" />
-                  <select class="form-control" v-if="fieldtypes[field.fieldtype] === 'select'" v-model="configdata.sortby" @change="updateLists">
-                    <option v-for="(option) in options" :key="option" :value="option">
+                  <select class="form-control" v-if="fieldtypes[field.fieldtype] === 'select'" v-model="configdata[field.fieldname]" @change="updateLists">
+                    <option v-for="(option) in options[field.fieldname]" :key="option" :value="option">
                       {{option}}
                     </option>
                   </select>
@@ -42,33 +42,76 @@ import Observable from '../../utils/observable';
 export default {
   name: 'KanbanModal',
   props: ['refdoctype', 'closeKanbanModal'],
-  created() {
-    this.doc = new Observable();
-  },
   data() {
     return {
       configdata: {
         kanbanname: '',
         referencedoctype: this.refdoctype,
         sortby: '',
-        lists: []
+        lists: [],
+        titlefield: ''
       }
     };
+  },
+  created() {
+    this.doc = new Observable();
+  },
+  computed: {
+    meta() {
+      return frappe.getMeta('Kanban');
+    },
+    fields() {
+      console.log(this.meta.fields);
+      return this.meta.fields;
+    },
+    fieldtypes() {
+      return {
+        Select: 'select',
+        Data: 'text',
+        Table: 'table'
+      };
+    },
+    options() {
+      const refdoctypemeta = frappe.getMeta(this.refdoctype);
+      const options = {
+        sortby: [],
+        titlefield: []
+      };
+      refdoctypemeta.fields.forEach(field => {
+        if (field.fieldtype === 'Select') options.sortby.push(field.fieldname);
+        else if (field.fieldtype === 'Data')
+          options.titlefield.push(field.fieldname);
+      });
+      return options;
+    },
+    disabled() {
+      return field => {
+        return field.fieldname === 'referencedoctype' ? true : false;
+      };
+    },
+    submitdisabled() {
+      let isInvalid = false;
+      const configFields = Object.keys(this.configdata);
+      configFields.forEach(field => {
+        if (this.configdata[field] === '') isInvalid = true;
+      });
+      return isInvalid;
+    }
   },
   methods: {
     async submit(e) {
       e.preventDefault();
-      const { kanbanname, referencedoctype, sortby } = this.configdata;
       const newDoc = await frappe.getNewDoc('Kanban');
       console.log('here', newDoc);
       Object.keys(this.configdata).forEach(field => {
         newDoc[field] = this.configdata[field];
       });
       newDoc._meta.fields.forEach(field => {
-        if (fieldtype === 'Select') field.options = this.options;
+        if (field.fieldtype === 'Select') field.options = this.options;
       });
       console.log('newdoc', newDoc);
       newDoc.insert();
+      this.initCards();
       this.$emit('closeKanbanModal');
     },
     async updateLists() {
@@ -85,44 +128,41 @@ export default {
           return doc;
         });
       });
+      console.log(columns);
       Promise.all(columns).then(kanbanColumns => {
+        console.log(kanbanColumns);
         this.configdata.lists = kanbanColumns;
+        console.log(this.configdata.lists);
       });
-    }
-  },
-  computed: {
-    meta() {
-      return frappe.getMeta('Kanban');
     },
-    fields() {
-      return this.meta.fields;
-    },
-    fieldtypes() {
-      return {
-        Select: 'select',
-        Data: 'text'
-      };
-    },
-    options() {
-      const refdoctypemeta = frappe.getMeta(this.refdoctype);
-      const options = [];
-      refdoctypemeta.fields.forEach(field => {
-        if (field.fieldtype === 'Select') options.push(field.fieldname);
+    async initCards() {
+      const refdoctypemeta = await frappe.getMeta(this.refdoctype);
+      const refdoctypefields = refdoctypemeta.fields.map(
+        field => field.fieldname
+      );
+      console.log('refdoctypefields', refdoctypefields);
+      const allItems = await frappe.db.getAll({
+        doctype: this.refdoctype,
+        fields: ['name', ...refdoctypefields]
       });
-      return options;
-    },
-    disabled() {
-      return field => {
-        return field.fieldname === 'referencedoctype' ? true : false;
-      };
-    },
-    submitdisabled() {
-      let isInvalid = false;
-      const configFields = Object.keys(this.configdata);
-      configFields.forEach(field => {
-        if (this.configdata[field] === '') isInvalid = true;
+      console.log('allitems', allItems);
+      console.log(this.configdata.kanbanname);
+      const board = await frappe.db.getAll({
+        doctype: 'Kanban',
+        fields: ['name'],
+        filters: { kanbanname: this.configdata.kanbanname }
       });
-      return isInvalid;
+      console.log(board);
+      allItems.forEach(item => {
+        const newCard = frappe.getNewDoc('KanbanCard');
+        newCard.then(doc => {
+          doc.boardname = board[0].name;
+          doc.refdoctypename = this.configdata.referencedoctype;
+          doc.listname = item[this.configdata.sortby];
+          doc.cardtitle = item[this.configdata.titlefield];
+          doc.insert();
+        });
+      });
     }
   }
 };
@@ -153,13 +193,7 @@ export default {
   border-radius: 5px;
 }
 
-.modal-header {
-}
-
 .modal-body {
   display: block;
-}
-
-.modal-footer {
 }
 </style>

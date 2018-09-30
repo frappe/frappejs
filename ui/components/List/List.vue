@@ -16,7 +16,6 @@
 import frappe from 'frappejs';
 import ListActions from './ListActions';
 import ListItem from './ListItem';
-// import FormLayout from '../Form/FormLayout';
 import KanbanModel from '../../../models/doctype/Kanban/Kanban';
 import KanbanModal from '../KanbanModal';
 
@@ -113,23 +112,6 @@ export default {
       return this.meta.getIndicatorColor(doc);
     },
     createKanban() {
-      // const kanban = frappe.getMeta('Kanban');
-      // const fields = kanban.fields;
-      // const newDoc = await frappe.getNewDoc('Kanban');
-      // KanbanModel.populateFieldsAndOptions(this.doctype).then(
-      //   refDoctypeFields => {
-      //     this.$modal.show({
-      //       component: KanbanModal,
-      //       modalProps: {
-      //         title: 'Create Kanban'
-      //       },
-      //       props: {
-      //         refdoctype: this.doctype
-      //         // doc: newDoc
-      //       }
-      //     });
-      //   }
-      // );
       console.log('creating kanban');
       this.showKanbanModal = true;
     },

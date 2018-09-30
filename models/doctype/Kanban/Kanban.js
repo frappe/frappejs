@@ -26,8 +26,15 @@ module.exports = {
     {
       fieldname: 'lists',
       label: 'Lists',
-      fieldType: 'Table',
-      childType: 'KanbanList'
+      fieldtype: 'Table',
+      childtype: 'KanbanList'
+    },
+    {
+      fieldname: 'titlefield',
+      label: 'Title Field for Cards',
+      fieldtype: 'Select',
+      options: [],
+      required: 1
     }
   ]
 };

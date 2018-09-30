@@ -7,8 +7,7 @@ module.exports = {
     {
       label: 'List Name',
       fieldname: 'listname',
-      fieldtype: 'Data',
-      required: 1
+      fieldtype: 'Data'
     }
   ]
 };

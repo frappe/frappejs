@@ -12,7 +12,7 @@
           </th>
         </tr>
       </thead>
-      <tbody v-if="rows.length" >
+      <tbody v-if="rows.length">
         <tr v-for="(row, i) in rows" :key="i">
           <th scope="row">
             <input
@@ -57,7 +57,9 @@
       <tbody v-else>
         <tr>
           <td :colspan="columns.length + 1" class="text-center">
-            No Data
+            <div class="table-cell">
+              No Data
+            </div>
           </td>
         </tr>
       </tbody>
@@ -70,7 +72,6 @@
 </template>
 
 <script>
-// import ModelTable from '../ModelTable';
 import Base from './Base';
 import Observable from 'frappejs/utils/observable';
 
@@ -82,7 +83,7 @@ export default {
       checkedRows: [],
       currentlyEditing: {},
       currentlyFocused: {}
-    }
+    };
   },
   mounted() {
     this.columns = this.getColumns();
@@ -93,50 +94,48 @@ export default {
       this.activateFocus(i, fieldname);
     },
     enterPressOnCell(i, fieldname) {
-      if(this.isEditing(i, fieldname)) {
+      if (this.isEditing(i, fieldname)) {
         this.deactivateEditing();
         this.activateFocus(i, fieldname);
-      }
-      else {
+      } else {
         this.activateEditing(i, fieldname);
       }
     },
     focusPreviousCell(i, fieldname) {
       if (this.isFocused(i, fieldname) && !this.isEditing(i, fieldname)) {
-        let pos = this.columns.map(c => c.fieldname).indexOf(fieldname);
+        let pos = this._getColumnIndex(fieldname);
         pos = pos - 1;
-        if(pos < 0) {
+        if (pos < 0) {
           i -= 1;
-          pos = (this.columns.length-1);
+          pos = this.columns.length - 1;
         }
-        if(i < 0) {
+        if (i < 0) {
           i = 0;
           pos = 0;
         }
         this.activateFocus(i, this.columns[pos].fieldname);
-
       }
     },
     focusNextCell(i, fieldname) {
       if (this.isFocused(i, fieldname) && !this.isEditing(i, fieldname)) {
-        let pos = this.columns.map(c => c.fieldname).indexOf(fieldname);
+        let pos = this._getColumnIndex(fieldname);
         pos = pos + 1;
-        if(pos > (this.columns.length)-1) {
+        if (pos > this.columns.length - 1) {
           i += 1;
           pos = 0;
         }
-        if(i>this.rows.length-1) {
-          i = (this.rows.length)-1;
-          pos = (this.columns.length)-1;
+        if (i > this.rows.length - 1) {
+          i = this.rows.length - 1;
+          pos = this.columns.length - 1;
         }
         this.activateFocus(i, this.columns[pos].fieldname);
       }
     },
     focusAboveCell(i, fieldname) {
       if (this.isFocused(i, fieldname) && !this.isEditing(i, fieldname)) {
-        let pos = this.columns.map(c => c.fieldname).indexOf(fieldname);
+        let pos = this._getColumnIndex(fieldname);
         i -= 1;
-        if(i < 0) {
+        if (i < 0) {
           i = 0;
         }
         this.activateFocus(i, this.columns[pos].fieldname);
@@ -144,13 +143,16 @@ export default {
     },
     focusBelowCell(i, fieldname) {
       if (this.isFocused(i, fieldname) && !this.isEditing(i, fieldname)) {
-        let pos = this.columns.map(c => c.fieldname).indexOf(fieldname);
+        let pos = this._getColumnIndex(fieldname);
         i += 1;
-        if(i > (this.rows.length)-1) {
-          i = (this.rows.length)-1;
+        if (i > this.rows.length - 1) {
+          i = this.rows.length - 1;
         }
         this.activateFocus(i, this.columns[pos].fieldname);
       }
+    },
+    _getColumnIndex(fieldname) {
+      return this.columns.map(c => c.fieldname).indexOf(fieldname);
     },
     onOutsideClick(e) {
       this.deactivateEditing();
@@ -176,12 +178,16 @@ export default {
       if (this.disabled) {
         return false;
       }
-      return this.currentlyEditing.index === i &&
-        this.currentlyEditing.fieldname === fieldname;
+      return (
+        this.currentlyEditing.index === i &&
+        this.currentlyEditing.fieldname === fieldname
+      );
     },
     isFocused(i, fieldname) {
-      return this.currentlyFocused.index === i &&
-        this.currentlyFocused.fieldname === fieldname;
+      return (
+        this.currentlyFocused.index === i &&
+        this.currentlyFocused.fieldname === fieldname
+      );
     },
     activateEditing(i, fieldname) {
       const docfield = this.columns.find(c => c.fieldname === fieldname);
@@ -201,7 +207,6 @@ export default {
         fieldname
       };
       this.$refs[fieldname + i][0].focus();
-
     },
     deactivateEditing(i, _fieldname) {
       const { index, fieldname } = this.currentlyEditing;
@@ -243,7 +248,7 @@ export default {
       // make a copy
       let rows = this.rows.slice();
       rows = rows.filter((row, i) => {
-        return !indices.includes(i)
+        return !indices.includes(i);
       });
 
       this.emitChange(rows);
@@ -279,7 +284,7 @@ export default {
       return this.value;
     }
   }
-}
+};
 </script>
 <style>
 .table-cell .form-control {
@@ -298,7 +303,7 @@ export default {
   border: 1px solid transparent;
 }
 
-.table [data-fieldtype="Link"] .input-group-append {
+.table [data-fieldtype='Link'] .input-group-append {
   display: none;
 }
 

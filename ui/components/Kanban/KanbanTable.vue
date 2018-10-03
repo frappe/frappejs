@@ -1,32 +1,14 @@
 <template>
   <div>
-    <table class="datatable-wrapper">
-      <thead>
-        <tr>
-          <th v-for="column in columns" :key="column['name']">
-            {{ column['name'] | capitalize }}
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="board in kanbanBoards" :key="board['name']" @click="editKanban" :boardname="board['name']">
-          <td v-for="(column, key) in columns" :key="key">
-            {{board[column['field']]}}
-          </td>
-          <td @click="showKanban($event,board.name)">Show Kanban</td>
-        </tr>
-      </tbody>
-    </table>
-    <div>
-      <list-actions :doctype="doctype" :showNew="false" />
-      <ul class="list-group">
-        <list-item v-for="board in kanbanBoards" :key="board.name" :id="board.name" @clickItem="showKanban($event,board.name)" @checkItem="toggleCheck(board.name)">
-          <span class="d-inline-block ml-2">
-            {{board.kanbanname}}
-          </span>
-        </list-item>
-      </ul>
-    </div>
+    <list-actions :doctype="doctype" :showNew="false" :showDelete="checkList.length" @delete="deleteCheckedItems" />
+    <ul class="list-group">
+      <list-item v-for="board in kanbanBoards" :key="board.name" :id="board.name" :isChecked="isChecked(board.name)" @checkItem="toggleCheck(board.name)" @clickItem="editKanban(board.name)">
+        <span class="d-inline-block ml-2">
+          {{board.kanbanname}}
+        </span>
+        <button class="btn btn-sm btn-primary" @click="showKanban($event,board.name)">Show Kanban</button>
+      </list-item>
+    </ul>
   </div>
 </template>
 
@@ -41,14 +23,13 @@ export default {
     ListActions,
     ListItem
   },
-  async created() {
-    const kanbanBoards = await frappe.db.getAll({
-      doctype: 'Kanban',
-      fields: ['name', ...this.meta.keywordFields]
+  created() {
+    frappe.db.on(`change:${this.doctype}`, () => {
+      this.updateList();
     });
-    this.kanbanBoards = kanbanBoards;
-    console.log(this.kanbanBoards);
-    console.log(this.meta);
+  },
+  mounted() {
+    this.updateList();
   },
   computed: {
     meta() {
@@ -62,7 +43,8 @@ export default {
       columns: [
         { name: 'name', field: 'kanbanname' },
         { name: 'reference doctype', field: 'referencedoctype' }
-      ]
+      ],
+      checkList: []
     };
   },
   filters: {
@@ -73,14 +55,37 @@ export default {
     }
   },
   methods: {
-    editKanban(e) {
-      const name = e.currentTarget.getAttribute('boardname');
+    editKanban(name) {
+      // console.log(e);
       this.$router.push(`/Kanban/${name}`);
     },
     showKanban(e, name) {
-      e.stopPropagation();
+      // e.stopPropagation();
       console.log('name', name);
       this.$router.push(`/Kanban/view/${name}`);
+    },
+    async deleteCheckedItems() {
+      await frappe.db.deleteMany(this.doctype, this.checkList);
+      this.checkList = [];
+    },
+    toggleCheck(name) {
+      if (this.checkList.includes(name)) {
+        this.checkList = this.checkList.filter(docname => docname !== name);
+      } else {
+        this.checkList = this.checkList.concat(name);
+      }
+    },
+    isChecked(name) {
+      return this.checkList.includes(name);
+    },
+    async updateList() {
+      const kanbanBoards = await frappe.db.getAll({
+        doctype: 'Kanban',
+        fields: ['name', ...this.meta.keywordFields]
+      });
+      this.kanbanBoards = kanbanBoards;
+      console.log(this.kanbanBoards);
+      console.log(this.meta);
     }
   }
 };
@@ -93,6 +98,12 @@ export default {
   border-left: none;
   border-right: none;
   border-radius: 0;
+  display: flex;
+  justify-content: space-between;
+  &:hover {
+    cursor: pointer;
+    background-color: $light;
+  }
 }
 
 .list-group-item:first-child {

@@ -23,7 +23,7 @@ module.exports = {
       required: 1
     },
     {
-      fieldname: 'refdoctypename',
+      fieldname: 'referencedoctype',
       label: 'Reference Doctype Name',
       fieldtype: 'Data',
       required: 1

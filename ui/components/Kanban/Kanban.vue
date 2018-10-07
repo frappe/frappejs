@@ -8,26 +8,61 @@
             <span class="card-title">{{card.cardtitle}}</span>
           </div>
         </div>
+        <button class="btn btn-lg" @click="addCard">Add a card</button>
       </div>
     </div>
+    <button class="btn btn-lg" @click="addList">Add a List</button>
+    <custom-modal v-if="showModal" @closeModal="closeModal">
+      <form @submit.prevent="onSubmit">
+        <label for="listname">
+          List Name
+          <input type="text" name="listname" v-model="newListName" required />
+        </label>
+          <input class="btn btn-primary" type="submit" value="submit" />
+      </form>
+    </custom-modal>
+    <custom-modal v-if="showCardModal" @closeModal="closeCardModal">
+      <form @submit.prevent="onCardSubmit">
+        <label for="card">
+          Card Name
+          <input type="text" name="cardname" v-model="cardconfig['cardname']" required />
+        </label>
+          <label for="listname">
+            List Name
+            <select name="referencedoctype" v-model="cardconfig['listname']">
+              <option v-for="(list) in kanban.lists" :value="list.listname" :key="list.listname">
+                {{list.listname}}
+              </option>
+            </select>
+          </label>
+          <input class="btn btn-primary" type="submit" value="submit" />
+      </form>
+    </custom-modal>
   </div>
 </template>
 
 <script>
 import frappe from 'frappejs';
-import Vue from 'vue';
+import CustomModal from './CustomModal';
 
 export default {
   name: 'Kanban',
-  // components: {
-  //   KanbanBoard
-  // },
+  components: {
+    CustomModal
+  },
   data: function() {
     return {
       kanban: null,
       draggedItemName: '',
       doctype: 'Kanban',
-      cards: []
+      cards: [],
+      showModal: false,
+      newListName: '',
+      showCardModal: '',
+      cardconfig: {
+        listname: '',
+        cardname: ''
+      }
     };
   },
   computed: {
@@ -39,6 +74,12 @@ export default {
     },
     fields() {
       return this.cardmeta.fields.map(field => field.fieldname);
+    },
+    referencedoctypemeta() {
+      return frappe.getMeta(this.kanban.referencedoctype);
+    },
+    referencedoctypefields() {
+      return this.referencedoctypemeta.fields.map(field => field.fieldname);
     }
   },
   filters: {
@@ -62,7 +103,6 @@ export default {
     },
     drophandler: function(e) {
       const destinationListName = e.target.id;
-      // const draggedItemN = this.draggedItem;
       const draggedItem = this.cards.filter(
         card => card.name === this.draggedItemName
       )[0];
@@ -89,16 +129,55 @@ export default {
     async initKanbanBoard() {
       const kanban = await frappe.getDoc(this.doctype, this.name);
       this.kanban = kanban;
-      this.getCards(kanban.name);
+      this.getCards();
     },
-    async getCards(boardname) {
+    async getCards() {
       const allCards = await frappe.db.getAll({
         doctype: 'KanbanCard',
-        filters: { boardname },
+        filters: { boardname: this.name },
         fields: [...this.fields, 'name']
       });
       this.cards = allCards;
       console.log(this.cards);
+    },
+    addList() {
+      console.log('adding list');
+      this.showModal = true;
+    },
+    closeModal() {
+      this.showModal = false;
+    },
+    async onSubmit() {
+      console.log('form submitted', this.newListName);
+      const newList = await frappe.getNewDoc('KanbanList');
+      newList.listname = this.newListName;
+      this.updateKanban(newList);
+      this.showModal = false;
+    },
+    async updateKanban(newList) {
+      const Kanban = await frappe.getDoc(this.doctype, this.name);
+      Kanban.lists.push(newList);
+      Kanban.update();
+      this.Kanban = Kanban;
+    },
+    async addCard() {
+      console.log('creating card');
+      console.log(this.referencedoctypefields);
+      this.showCardModal = true;
+    },
+    closeCardModal() {
+      this.showCardModal = false;
+    },
+    async onCardSubmit() {
+      console.log('submitting card', this.cardconfig['cardname']);
+      const newCard = await frappe.getNewDoc('KanbanCard');
+      newCard.cardtitle = this.cardconfig.cardname;
+      newCard.boardname = this.kanban.name;
+      newCard.listname = this.cardconfig.listname;
+      newCard.referencedoctype = this.kanban.referencedoctype;
+      newCard.insert();
+      await this.getCards();
+      this.closeCardModal();
     }
   }
 };

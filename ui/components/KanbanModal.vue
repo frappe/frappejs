@@ -157,7 +157,7 @@ export default {
         const newCard = frappe.getNewDoc('KanbanCard');
         newCard.then(doc => {
           doc.boardname = board[0].name;
-          doc.refdoctypename = this.configdata.referencedoctype;
+          doc.referencedoctype = this.configdata.referencedoctype;
           doc.listname = item[this.configdata.sortby];
           doc.cardtitle = item[this.configdata.titlefield];
           doc.insert();

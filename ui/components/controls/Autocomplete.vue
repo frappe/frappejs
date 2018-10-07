@@ -1,18 +1,24 @@
 <script>
-import Awesomplete from 'awesomplete';
 import Data from './Data';
 
 export default {
   extends: Data,
   data() {
     return {
-      awesomplete: null
-    }
+      popupOpen: false,
+      popupItems: [],
+      highlightedItem: -1
+    };
   },
-  mounted() {
-    this.setupAwesomplete();
-    this.awesomplete.container.classList.add('form-control');
-    this.awesomplete.ul.classList.add('dropdown-menu');
+  render(h) {
+    return this.getWrapperElement(h);
+  },
+  watch: {
+    // prop change does not change the value of input
+    // this only happens for Autocomplete
+    value(newValue) {
+      this.$refs.input.value = newValue;
+    }
   },
   methods: {
     getInputListeners() {
@@ -20,72 +26,124 @@ export default {
         input: e => {
           this.updateList(e.target.value);
         },
-        'awesomplete-select': e => {
-          const value = e.text.value;
-          this.handleChange(value);
+        keydown: e => {
+          if (e.keyCode === 38) {
+            // up
+            this.highlightAboveItem();
+          }
+          if (e.keyCode === 40) {
+            // down
+            this.highlightBelowItem();
+          }
+          if (e.keyCode === 13) {
+            if (this.highlightedItem > -1) {
+              this.onItemClick(this.popupItems[this.highlightedItem]);
+              this.popupOpen = false;
+            }
+          }
         },
         focus: async e => {
           await this.updateList();
-          this.awesomplete.evaluate();
-          this.awesomplete.open();
+        },
+        blur: () => {
+          setTimeout(() => {
+            this.popupOpen = false;
+          }, 200);
         }
+      };
+    },
+    highlightBelowItem() {
+      this.highlightedItem += 1;
+      if (this.highlightedItem > this.popupItems.length - 1) {
+        this.highlightedItem = this.popupItems.length - 1;
       }
-    },
-    async updateList(value) {
-      this.awesomplete.list = await this.getList(value);
-    },
-    getList(text) {
-      return this.docfield.getList(text);
-    },
-    setupAwesomplete() {
-      const input = this.$refs.input;
-      this.awesomplete = new Awesomplete(input, {
-        minChars: 0,
-        maxItems: 99,
-        sort: this.sort(),
-        filter: this.filter(),
-        item: (text, input) => {
-          const li = document.createElement('li');
-          li.classList.add('dropdown-item');
-          li.classList.add('d-flex');
-          li.classList.add('align-items-center');
-          li.innerHTML = text.label;
 
-          return li;
-        }
+      this.scrollToItem(this.highlightedItem);
+    },
+    highlightAboveItem() {
+      this.highlightedItem -= 1;
+      if (this.highlightedItem < 0) {
+        this.highlightedItem = 0;
+      }
+
+      this.scrollToItem(this.highlightedItem);
+    },
+    getChildrenElement(h) {
+      return [
+        this.onlyInput ? null : this.getLabelElement(h),
+        this.getInputElement(h),
+        this.getDropdownElement(h)
+      ];
+    },
+    getDropdownElement(h) {
+      return h(
+        'div',
+        {
+          class: ['dropdown-menu w-100', this.popupOpen ? 'show' : ''],
+          ref: 'dropdown-menu'
+        },
+        this.getDropdownItems(h)
+      );
+    },
+    getDropdownItems(h) {
+      return this.popupItems.map((item, i) => {
+        return h('a', {
+          class: [
+            'dropdown-item',
+            this.highlightedItem === i ? 'active text-dark' : ''
+          ],
+          attrs: {
+            href: '#',
+            'data-value': item.value
+          },
+          ref: i,
+          on: {
+            click: e => {
+              e.preventDefault();
+              this.onItemClick(item);
+              this.popupOpen = false;
+            }
+          },
+          domProps: {
+            innerHTML: item.label
+          }
+        });
       });
-      this.bindEvents();
     },
-    bindEvents() {
+    onItemClick(item) {
+      this.handleChange(item.value);
     },
-    sort() {
-      // return a function that handles sorting of items
+    scrollToItem(i) {
+      const scrollTo = this.$refs[i].offsetTop - 5;
+      this.$refs['dropdown-menu'].scrollTop = scrollTo;
     },
-    filter() {
-      // return a function that filters list suggestions based on input
-      return Awesomplete.FILTER_CONTAINS
+    async updateList(keyword) {
+      this.popupItems = await this.getList(keyword);
+      this.popupOpen = this.popupItems.length > 0;
+    },
+    async getList(text = '') {
+      let list = await this.docfield.getList(text);
+      list = list.map(item => {
+        if (typeof item === 'string') {
+          return {
+            label: item,
+            value: item
+          };
+        }
+        return item;
+      });
+
+      return list.filter(item => {
+        const string = (item.label + ' ' + item.value).toLowerCase();
+        return string.includes(text.toLowerCase());
+      });
     }
   }
 };
 </script>
-<style lang="scss">
-@import '../../styles/variables';
-@import "~awesomplete/awesomplete.base";
-
-.awesomplete {
-  padding: 0;
-  border: none;
-
-  & > ul {
-    padding: $dropdown-padding-y 0;
-  }
-
-  .dropdown-menu:not([hidden]) {
-    display: block;
-  }
-
-  .dropdown-item[aria-selected="true"] {
-    background-color: $dropdown-link-hover-bg;
-  }
+<style>
+.form-group[data-fieldtype='Link'] .dropdown-menu {
+  max-height: 200px;
+  overflow: auto;
 }
 </style>

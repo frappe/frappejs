@@ -23,7 +23,8 @@ module.exports = {
             bcc: mailDetails.bccEmailAddress,
             subject: mailDetails.subject,
             text: mailDetails.bodyText,
-            //html:"",
+            read: "Seen",
+            sent: 1,
           };
           let transporter = nodemailer.createTransport({
             service: 'gmail',

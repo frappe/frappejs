@@ -31,14 +31,20 @@ module.exports = {
       "SENT": "[Gmail]/Sent Mail",
       "INBOX": "INBOX", // TODO: FILTER to find only unseen
       "STARRED": "[Gmail]/Starred", // REM
+      "DRAFT": "[Gmail]/Drafts",
+      "SPAM": "[Gmail]/Spam",
+      "TRASH": "[Gmail]/Trash"
     };
 
     var sent = 0;
+    var read = "Unseen";
     // FIX THIS
-    if (syncOption == "SENT") {
+    if (syncOption != "INBOX") {
       sent = 1;
+      read = "Seen";
     }
-    console.log()
+
+
     client.connect().then(() => {
       client.listMessages(MailBoxMap[syncOption], '1:*', ['uid', 'flags', 'envelope', 'body[]']).then((messages) => {
         messages.forEach((message) => {
@@ -49,7 +55,7 @@ module.exports = {
 
             var mailObject = {
               doctype: 'Email',
-              name: message.envelope['message-id'],
+              name: message.envelope['message-id'] + syncOption,
               fromEmailAddress: message.envelope.from[0].address,
               toEmailAddress: message.envelope.to[0].address,
               // ccEmailAddress: message.envelope.cc[0].address,
@@ -58,7 +64,9 @@ module.exports = {
               subject: message.envelope.subject,
               bodyHtml: parsed.html,
               bodyText: parsed.text,
-              sent: sent
+              sent: sent,
+              read: read,
+              syncOption: syncOption,
             }
             if (await frappe.db.exists('Email', mailObject.name) == false) {
               await frappe.insert(mailObject);

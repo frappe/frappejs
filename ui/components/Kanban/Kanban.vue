@@ -1,12 +1,14 @@
 <template>
   <div v-if="kanban !== null" class="kanban-container">
     <div class="kanban-list" v-for="list in kanban.lists" :id="list.listname" :key="list.listname" v-on:dragover="dragover" v-on:drop="drophandler">
-      <list-actions :doctype="list.listname" :showDelete="checklist.length" @new="addCard" @delete="deleteCards" />
+      <list-actions :doctype="list.listname" :showDelete="checklist.length" @delete="deleteCards" :showNew="false" />
       <ul class="list-group">
-        <list-item v-for="card in cards" :key="card.cardtitle" :id="card.name" v-if="card.listname === list.listname" :name="card.name" :isChecked="isChecked(card.name)" @checkItem="toggleCheck(card.name)" draggable="true" v-on:dragstart="dragstart">
-          <span class="card-title">{{card.cardtitle}}</span>
-        </list-item>
-        <button class="btn btn-lg" @click="addCard">Add a card</button>
+        <div v-for="card in cards" :key="card.cardtitle" v-if="card.listname === list.listname" :name="card.name" draggable="true" v-on:dragstart="dragstart">
+          <list-item v-if="card.listname === list.listname" :id="card.name" :isChecked="isChecked(card.name)" @checkItem="toggleCheck(card.name)">
+            <span class="card-title">{{card.cardtitle}}</span>
+          </list-item>
+        </div>
+        <button class="btn btn-lg" @click="addCard" :listname="list.listname">Add a card</button>
       </ul>
     </div>
     <button class="btn btn-lg" @click="addList">Add a List</button>
@@ -27,11 +29,7 @@
         </label>
         <label for="listname">
           List Name
-          <select name="referencedoctype" v-model="cardconfig['listname']">
-            <option v-for="(list) in kanban.lists" :value="list.listname" :key="list.listname">
-              {{list.listname}}
-            </option>
-          </select>
+          <input type="text" name="listname" v-model="cardconfig['listname']" value="cardconfig['listname']" disabled />
         </label>
         <input class="btn btn-primary" type="submit" value="submit" />
       </form>
@@ -97,7 +95,7 @@ export default {
   },
   methods: {
     dragstart: function(e) {
-      console.log(e);
+      console.log('hereh', e);
       e.dataTransfer.effectAllowed = 'move';
       let attribute, draggedItemName;
       draggedItemName = e.target.getAttribute('name');
@@ -163,9 +161,10 @@ export default {
       Kanban.update();
       this.Kanban = Kanban;
     },
-    async addCard() {
-      console.log('creating card');
-      console.log(this.referencedoctypefields);
+    async addCard(e) {
+      const targetList = e.target.getAttribute('listname');
+      this.cardconfig.listname = targetList;
+      console.log(this.cardconfig);
       this.showCardModal = true;
     },
     closeCardModal() {

@@ -1,15 +1,13 @@
 <template>
   <div v-if="kanban !== null" class="kanban-container">
     <div class="kanban-list" v-for="list in kanban.lists" :id="list.listname" :key="list.listname" v-on:dragover="dragover" v-on:drop="drophandler">
-      <div class="list-name">
-        {{list.listname | capitalize}}
-        <div v-for="card in cards" :key="card.cardtitle">
-          <div v-if="card.listname === list.listname" :name="card.name" class="card-item" draggable="true" v-on:dragstart="dragstart">
-            <span class="card-title">{{card.cardtitle}}</span>
-          </div>
-        </div>
+      <list-actions :doctype="list.listname" :showDelete="checklist.length" @new="addCard" @delete="deleteCards" />
+      <ul class="list-group">
+        <list-item v-for="card in cards" :key="card.cardtitle" :id="card.name" v-if="card.listname === list.listname" :name="card.name" :isChecked="isChecked(card.name)" @checkItem="toggleCheck(card.name)" draggable="true" v-on:dragstart="dragstart">
+          <span class="card-title">{{card.cardtitle}}</span>
+        </list-item>
         <button class="btn btn-lg" @click="addCard">Add a card</button>
-      </div>
+      </ul>
     </div>
     <button class="btn btn-lg" @click="addList">Add a List</button>
     <custom-modal v-if="showModal" @closeModal="closeModal">
@@ -18,7 +16,7 @@
           List Name
           <input type="text" name="listname" v-model="newListName" required />
         </label>
-          <input class="btn btn-primary" type="submit" value="submit" />
+        <input class="btn btn-primary" type="submit" value="submit" />
       </form>
     </custom-modal>
     <custom-modal v-if="showCardModal" @closeModal="closeCardModal">
@@ -27,15 +25,15 @@
           Card Name
           <input type="text" name="cardname" v-model="cardconfig['cardname']" required />
         </label>
-          <label for="listname">
-            List Name
-            <select name="referencedoctype" v-model="cardconfig['listname']">
-              <option v-for="(list) in kanban.lists" :value="list.listname" :key="list.listname">
-                {{list.listname}}
-              </option>
-            </select>
-          </label>
-          <input class="btn btn-primary" type="submit" value="submit" />
+        <label for="listname">
+          List Name
+          <select name="referencedoctype" v-model="cardconfig['listname']">
+            <option v-for="(list) in kanban.lists" :value="list.listname" :key="list.listname">
+              {{list.listname}}
+            </option>
+          </select>
+        </label>
+        <input class="btn btn-primary" type="submit" value="submit" />
       </form>
     </custom-modal>
   </div>
@@ -44,11 +42,15 @@
 <script>
 import frappe from 'frappejs';
 import CustomModal from './CustomModal';
+import ListItem from '../List/ListItem';
+import ListActions from '../List/ListActions';
 
 export default {
   name: 'Kanban',
   components: {
-    CustomModal
+    CustomModal,
+    ListItem,
+    ListActions
   },
   data: function() {
     return {
@@ -62,7 +64,8 @@ export default {
       cardconfig: {
         listname: '',
         cardname: ''
-      }
+      },
+      checklist: []
     };
   },
   computed: {
@@ -178,12 +181,28 @@ export default {
       newCard.insert();
       await this.getCards();
       this.closeCardModal();
+    },
+    toggleCheck(name) {
+      if (this.checklist.includes(name)) {
+        this.checklist = this.checklist.filter(docname => docname !== name);
+      } else {
+        this.checklist = this.checklist.concat(name);
+      }
+    },
+    isChecked(name) {
+      return this.checklist.includes(name);
+    },
+    async deleteCards() {
+      await frappe.db.deleteMany('KanbanCard', this.checklist);
+      this.checklist = [];
     }
   }
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '../../styles/variables';
+
 h3 {
   margin: 40px 0 0;
 }
@@ -211,7 +230,7 @@ a {
   background-color: #e8ebed;
   box-shadow: -1px 1px 16px -3px rgba(0, 0, 0, 0.75);
 }
-.list-name {
+/* .list-name {
   text-align: center;
   font-size: 1.5rem;
   font-weight: bold;
@@ -229,5 +248,5 @@ a {
   color: #2066d6;
   font-size: 1.2rem;
   font-weight: bold;
-}
+} */
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div v-if="kanban !== null" class="kanban-container">
-    <div class="kanban-list" v-for="list in kanban.lists" :id="list.listname" :key="list.listname" v-on:dragover="dragover" v-on:drop="drophandler">
-      <list-actions :doctype="list.listname" :showDelete="checklist.length" @delete="deleteCards" :showNew="false" />
+    <div class="kanban-list" v-for="list in kanban.lists" v-if="!list.archived" :id="list.listname" :key="list.listname" v-on:dragover="dragover" v-on:drop="drophandler">
+      <list-actions :doctype="list.listname" :showDelete="checklist.length" @delete="deleteCards" :showNew="false" :showArchive="true" @archiveList="archiveList(list.listname)" />
       <ul class="list-group">
         <div v-for="card in cards" :key="card.cardtitle" v-if="card.listname === list.listname" :name="card.name" draggable="true" v-on:dragstart="dragstart">
           <list-item v-if="card.listname === list.listname" :id="card.name" :isChecked="isChecked(card.name)" @checkItem="toggleCheck(card.name)">
@@ -152,13 +152,13 @@ export default {
       console.log('form submitted', this.newListName);
       const newList = await frappe.getNewDoc('KanbanList');
       newList.listname = this.newListName;
-      this.updateKanban(newList);
-      this.showModal = false;
-    },
-    async updateKanban(newList) {
       const Kanban = await frappe.getDoc(this.doctype, this.name);
       Kanban.lists.push(newList);
       Kanban.update();
+      this.updateKanban(Kanban);
+      this.showModal = false;
+    },
+    async updateKanban(Kanban) {
       this.Kanban = Kanban;
     },
     async addCard(e) {
@@ -194,6 +194,17 @@ export default {
     async deleteCards() {
       await frappe.db.deleteMany('KanbanCard', this.checklist);
       this.checklist = [];
+    },
+    async archiveList(listname) {
+      const Kanban = await frappe.getDoc(this.doctype, this.name);
+      Kanban.lists.forEach(
+        list =>
+          list.listname === listname
+            ? (list.archived = 1)
+            : (list.archived = list.archived)
+      );
+      Kanban.update();
+      this.updateKanban(Kanban);
     }
   }
 };

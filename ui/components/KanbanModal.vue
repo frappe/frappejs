@@ -125,6 +125,7 @@ export default {
         const newColumn = frappe.getNewDoc('KanbanList');
         return newColumn.then(doc => {
           doc.listname = column;
+          doc.archived = false;
           return doc;
         });
       });

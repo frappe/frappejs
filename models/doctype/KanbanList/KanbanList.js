@@ -8,6 +8,12 @@ module.exports = {
       label: 'List Name',
       fieldname: 'listname',
       fieldtype: 'Data'
+    },
+    {
+      label: 'Archived',
+      fieldname: 'archived',
+      fieldtype: 'Int',
+      default: 0
     }
   ]
 };

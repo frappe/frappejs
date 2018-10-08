@@ -1,7 +1,7 @@
 module.exports = {
   name: 'Kanban',
   doctype: 'DocType',
-  naming: 'autoincrement',
+  naming: 'random',
   keywordFields: ['kanbanname', 'referencedoctype', 'sortby'],
   fields: [
     {

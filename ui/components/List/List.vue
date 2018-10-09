@@ -9,7 +9,7 @@
         </span>
       </list-item>
     </ul>
-    <kanban-modal v-if="showKanbanModal" :refdoctype="doctype" @closeKanbanModal='closeKanbanModal' />
+    <create-kanban-modal :showCreateKanbanModal="showCreateKanbanModal" :refdoctype="doctype" />
   </div>
 </template>
 <script>
@@ -17,7 +17,7 @@ import frappe from 'frappejs';
 import ListActions from './ListActions';
 import ListItem from './ListItem';
 import KanbanModel from '../../../models/doctype/Kanban/Kanban';
-import KanbanModal from '../KanbanModal';
+import CreateKanbanModal from '../Kanban/CreateKanbanModal';
 
 export default {
   name: 'List',
@@ -25,14 +25,14 @@ export default {
   components: {
     ListActions,
     ListItem,
-    KanbanModal
+    CreateKanbanModal
   },
   data() {
     return {
       data: [],
       checkList: [],
       activeItem: '',
-      showKanbanModal: false
+      showCreateKanbanModal: false
     };
   },
   computed: {
@@ -113,10 +113,7 @@ export default {
     },
     createKanban() {
       console.log('creating kanban');
-      this.showKanbanModal = true;
-    },
-    closeKanbanModal() {
-      this.showKanbanModal = false;
+      this.showCreateKanbanModal = true;
     }
   }
 };

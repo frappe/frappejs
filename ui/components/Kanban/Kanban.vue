@@ -11,8 +11,10 @@
         <button class="btn btn-lg" @click="addCard" :listname="list.listname">Add a card</button>
       </ul>
     </div>
-    <button class="btn btn-lg" @click="addList">Add a List</button>
-    <custom-modal v-if="showModal" @closeModal="closeModal" header="Create List">
+    <div>
+      <button class="btn btn-lg btn-block mt-16" @click="addList">Add a List</button>
+    </div>
+    <custom-modal v-if="showCreateListModal" @closeModal="closeCreateListModal" header="Create List">
       <form @submit.prevent="onSubmit">
         <label for="listname">
           List Name
@@ -21,7 +23,7 @@
         <input class="btn btn-primary" type="submit" value="submit" />
       </form>
     </custom-modal>
-    <custom-modal v-if="showCardModal" @closeModal="closeCardModal" header="Create Card">
+    <custom-modal v-if="showCreateCardModal" @closeModal="closeCreateCardModal" header="Create Card">
       <form @submit.prevent="onCardSubmit">
         <label for="card">
           Card Name
@@ -64,9 +66,9 @@ export default {
       draggedItemName: '',
       doctype: 'Kanban',
       cards: [],
-      showModal: false,
+      showCreateListModal: false,
       newListName: '',
-      showCardModal: '',
+      showCreateCardModal: '',
       cardconfig: {
         listname: '',
         cardname: '',
@@ -155,10 +157,10 @@ export default {
     },
     addList() {
       console.log('adding list');
-      this.showModal = true;
+      this.showCreateListModal = true;
     },
-    closeModal() {
-      this.showModal = false;
+    closeCreateListModal() {
+      this.showCreateListModal = false;
     },
     async onSubmit() {
       console.log('form submitted', this.newListName);
@@ -168,7 +170,7 @@ export default {
       Kanban.lists.push(newList);
       Kanban.update();
       this.updateKanban(Kanban);
-      this.showModal = false;
+      this.showCreateListModal = false;
     },
     async updateKanban(Kanban) {
       this.Kanban = Kanban;
@@ -177,10 +179,10 @@ export default {
       const targetList = e.target.getAttribute('listname');
       this.cardconfig.listname = targetList;
       console.log(this.cardconfig);
-      this.showCardModal = true;
+      this.showCreateCardModal = true;
     },
-    closeCardModal() {
-      this.showCardModal = false;
+    closeCreateCardModal() {
+      this.showCreateCardModal = false;
     },
     async onCardSubmit() {
       console.log('submitting card', this.cardconfig['cardname']);
@@ -191,7 +193,7 @@ export default {
       newCard.referencedoctype = this.kanban.referencedoctype;
       newCard.insert();
       await this.getCards();
-      this.closeCardModal();
+      this.closeCreateCardModal();
     },
     toggleCheck(name) {
       if (this.checklist.includes(name)) {
@@ -264,14 +266,16 @@ a {
   display: flex;
   margin: 0 auto;
   justify-content: space-around;
+  overflow-x: scroll;
 }
 .kanban-list {
-  margin: 1rem 0;
+  margin: 1rem 0.5rem;
   border-radius: 5px;
-  min-height: 400px;
+  min-height: calc(100vh - 5rem);
   min-width: 300px;
   background-color: #e8ebed;
   box-shadow: -1px 1px 16px -3px rgba(0, 0, 0, 0.75);
+  overflow-y: auto;
 }
 /* .list-name {
   text-align: center;

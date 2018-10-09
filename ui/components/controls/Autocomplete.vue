@@ -18,7 +18,6 @@ export default {
     // this only happens for Autocomplete
     value(newValue) {
       this.$refs.input.value = newValue;
-      console.log('sahil')
     }
   },
   methods: {

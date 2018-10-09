@@ -2,6 +2,8 @@ module.exports = {
   name: 'KanbanCard',
   doctype: 'DocType',
   naming: 'random',
+  keywordFields: ['cardtitle', 'carddescription', 'assignee'],
+  titleField: 'cardtitle',
   fields: [
     {
       fieldname: 'cardtitle',
@@ -27,6 +29,17 @@ module.exports = {
       label: 'Reference Doctype Name',
       fieldtype: 'Data',
       required: 1
+    },
+    {
+      fieldname: 'carddescription',
+      label: 'Card Description',
+      fieldtype: 'Text'
+    },
+    {
+      fieldname: 'assignee',
+      label: 'Assignee',
+      fieldtype: 'Link',
+      target: 'User'
     }
   ]
 };

@@ -3,19 +3,25 @@
         <div class="modal-wrapper">
             <div class="modal-container">
                 <h3 class="modal-header">
-                    Create something
+                    {{header}}
                 </h3>
                 <div class="modal-body">
-                    Custom Modal
                     <slot></slot>
                 </div>
-                <div>
+                <div class="modal-footer">
                     <button class="btn btn-sm btn-danger" @click="$emit('closeModal')">Close</button>
                 </div>
             </div>
         </div>
     </div>
 </template>
+
+<script>
+export default {
+  name: 'CustomModal',
+  props: ['header']
+};
+</script>
 
 <style scoped>
 .modal-mask {

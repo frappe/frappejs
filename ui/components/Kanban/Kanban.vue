@@ -4,7 +4,7 @@
       <list-actions :doctype="list.listname" :showDelete="checklist.length" @delete="deleteCards" :showNew="false" :showArchive="true" @archiveList="archiveList(list.listname)" />
       <ul class="list-group">
         <div v-for="card in cards" :key="card.cardtitle" v-if="card.listname === list.listname" :name="card.name" draggable="true" v-on:dragstart="dragstart">
-          <list-item v-if="card.listname === list.listname" :id="card.name" :isChecked="isChecked(card.name)" @checkItem="toggleCheck(card.name)">
+          <list-item v-if="card.listname === list.listname" :id="card.name" :isChecked="isChecked(card.name)" @checkItem="toggleCheck(card.name)" @clickItem="displayCardDetails(card.name)">
             <span class="card-title">{{card.cardtitle}}</span>
           </list-item>
         </div>
@@ -12,7 +12,7 @@
       </ul>
     </div>
     <button class="btn btn-lg" @click="addList">Add a List</button>
-    <custom-modal v-if="showModal" @closeModal="closeModal">
+    <custom-modal v-if="showModal" @closeModal="closeModal" header="Create List">
       <form @submit.prevent="onSubmit">
         <label for="listname">
           List Name
@@ -21,7 +21,7 @@
         <input class="btn btn-primary" type="submit" value="submit" />
       </form>
     </custom-modal>
-    <custom-modal v-if="showCardModal" @closeModal="closeCardModal">
+    <custom-modal v-if="showCardModal" @closeModal="closeCardModal" header="Create Card">
       <form @submit.prevent="onCardSubmit">
         <label for="card">
           Card Name
@@ -34,6 +34,10 @@
         <input class="btn btn-primary" type="submit" value="submit" />
       </form>
     </custom-modal>
+    <custom-modal v-if="showCardInfoModal" @closeModal="closeCardInfoModal" header="Card Details">
+      <form-actions class="p-3 border-bottom" v-if="currentCard !== null" :doc="currentCard" @save="saveCardChanges" @submit="submitCardChanges" :links="links" @revert="revert" @print="print" />
+      <form-layout class="p-3" :doc="currentCard" :fields="cardmeta.fields" :layout="cardmeta.layout" v-if="currentCard !== null" />
+    </custom-modal>
   </div>
 </template>
 
@@ -42,13 +46,17 @@ import frappe from 'frappejs';
 import CustomModal from './CustomModal';
 import ListItem from '../List/ListItem';
 import ListActions from '../List/ListActions';
+import FormLayout from '../Form/FormLayout';
+import FormActions from '../Form/FormActions';
 
 export default {
   name: 'Kanban',
   components: {
     CustomModal,
     ListItem,
-    ListActions
+    ListActions,
+    FormLayout,
+    FormActions
   },
   data: function() {
     return {
@@ -61,9 +69,13 @@ export default {
       showCardModal: '',
       cardconfig: {
         listname: '',
-        cardname: ''
+        cardname: '',
+        carddescription: ''
       },
-      checklist: []
+      checklist: [],
+      showCardInfoModal: false,
+      currentCard: null,
+      links: []
     };
   },
   computed: {
@@ -205,6 +217,27 @@ export default {
       );
       Kanban.update();
       this.updateKanban(Kanban);
+    },
+    async displayCardDetails(cardName) {
+      this.showCardInfoModal = true;
+      const card = await frappe.getDoc('KanbanCard', cardName);
+      this.currentCard = card;
+    },
+    closeCardInfoModal() {
+      this.showCardInfoModal = false;
+    },
+    async saveCardChanges() {
+      console.log('save');
+      await this.currentCard.update();
+    },
+    submitCardChanges() {
+      console.log('save');
+    },
+    revert() {
+      console.log('save');
+    },
+    print() {
+      console.log('print');
     }
   }
 };

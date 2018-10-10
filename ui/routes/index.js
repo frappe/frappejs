@@ -36,7 +36,7 @@ export default [
     component: KanbanTable
   },
   {
-    path: '/Kanban/:name',
+    path: '/kanban/:name',
     name: 'Edit Kanban',
     component: KanbanDetails
   },

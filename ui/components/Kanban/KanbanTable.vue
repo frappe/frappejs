@@ -60,7 +60,7 @@ export default {
       this.$router.push(`/Kanban/${name}`);
     },
     showKanban(e, name) {
-      // e.stopPropagation();
+      e.stopPropagation();
       console.log('name', name);
       this.$router.push(`/Kanban/view/${name}`);
     },

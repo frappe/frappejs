@@ -14,8 +14,7 @@ module.exports = {
     {
       fieldname: 'listname',
       label: 'Add To List',
-      fieldtype: 'Select',
-      options: [],
+      fieldtype: 'Data',
       required: 1
     },
     {

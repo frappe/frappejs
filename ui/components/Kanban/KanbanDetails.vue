@@ -4,8 +4,8 @@
       <div :key="key" v-for="(field,key) in fields">
         <label>
           {{field.label}}
-          <input class="form-control" :disabled="disabled(field)" v-if="fieldtypes[field.fieldtype] === 'text'" type="text" v-model="configdata[field.fieldname]" />
-          <select class="form-control" v-if="fieldtypes[field.fieldtype] === 'select'" v-model="configdata.sortby">
+          <input class="form-control form-control-lg" :disabled="disabled(field)" v-if="fieldtypes[field.fieldtype] === 'text'" type="text" v-model="configdata[field.fieldname]" />
+          <select class="form-control form-control-lg" v-if="fieldtypes[field.fieldtype] === 'select'" v-model="configdata.sortby">
             <option v-for="(option) in options" :key="option" :value="option">
               {{option}}
             </option>

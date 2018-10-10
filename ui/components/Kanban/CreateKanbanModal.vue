@@ -103,7 +103,7 @@ export default {
       console.log('newdoc', newDoc);
       newDoc.insert();
       this.initCards();
-      this.$emit('closeKanbanModal');
+      this.closeCreateKanbanModal();
     },
     async updateLists() {
       const refdoctypemeta = await frappe.getMeta(this.refdoctype);

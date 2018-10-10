@@ -18,7 +18,7 @@
       <form @submit.prevent="onSubmit">
         <label for="listname">
           List Name
-          <input type="text" name="listname" v-model="newListName" required />
+          <input class="form-control" type="text" name="listname" v-model="newListName" required />
         </label>
         <input class="btn btn-primary" type="submit" value="submit" />
       </form>
@@ -27,11 +27,11 @@
       <form @submit.prevent="onCardSubmit">
         <label for="card">
           Card Name
-          <input type="text" name="cardname" v-model="cardconfig['cardname']" required />
+          <input class="form-control" type="text" name="cardname" v-model="cardconfig['cardname']" required />
         </label>
         <label for="listname">
           List Name
-          <input type="text" name="listname" v-model="cardconfig['listname']" value="cardconfig['listname']" disabled />
+          <input class="form-control" type="text" name="listname" v-model="cardconfig['listname']" value="cardconfig['listname']" disabled />
         </label>
         <input class="btn btn-primary" type="submit" value="submit" />
       </form>
@@ -105,6 +105,14 @@ export default {
     }
   },
   created() {
+    frappe.db.on(`change:${this.doctype}`, () => {
+      this.initKanbanBoard();
+    });
+    frappe.db.on(`change:KanbanCard`, () => {
+      this.getCards();
+    });
+  },
+  mounted() {
     this.initKanbanBoard();
   },
   methods: {

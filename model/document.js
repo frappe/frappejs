@@ -251,12 +251,12 @@ module.exports = class BaseDocument extends Observable {
         return true;
 
         function shouldApplyFormula (field, doc) {
-          if (frappe.isServer) {
-            if (field.readOnly) {
-              return true;
-            }
-          } else {
-            if (doc[field.fieldname] == null) {
+          if (field.readOnly) {
+            return true;
+          }
+
+          if (!frappe.isServer) {
+            if (doc[field.fieldname] == null || doc[field.fieldname] == '') {
               return true;
             }
           }

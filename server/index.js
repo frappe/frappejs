@@ -1,7 +1,7 @@
 const backends = {};
 backends.sqlite = require('frappejs/backends/sqlite');
 //backends.mysql = require('frappejs/backends/mysql');
-
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -17,7 +17,8 @@ const { setupExpressRoute: setRouteForPDF } = require('frappejs/server/pdf');
 const auth = require('./../auth/auth')();
 const morgan = require('morgan');
 const { addWebpackMiddleware } = require('../webpack/serve');
-const { getAppConfig } = require('../webpack/utils');
+const { getAppConfig, resolveAppDir } = require('../webpack/utils');
+const { thumbnailMiddleware } = require('./utils');
 
 frappe.conf = getAppConfig();
 
@@ -41,8 +42,7 @@ module.exports = {
         app.use(bodyParser.urlencoded({ extended: true }));
 
         app.use(express.static(frappe.conf.distPath));
-
-        app.use('/static', express.static(frappe.conf.staticPath))
+        app.use('/static', thumbnailMiddleware(resolveAppDir(frappe.conf.staticPath)));
 
         app.use(morgan('tiny'));
 

@@ -366,7 +366,7 @@ temporary rendered events).
 .fc-event .fc-bg {
   /* the generic .fc-bg already does position */
   z-index: 1;
-  background: #fff;
+  background: rgba(0,0,0,0.4);
   opacity: .25; }
 
 .fc-event .fc-content {
@@ -1106,6 +1106,10 @@ be a descendant of the grid when it is being dragged.
 
 .fc-time-grid-event .fc-content {
   overflow: hidden;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
   /* for when .fc-selected */ }
 
 .fc-time-grid-event .fc-time,

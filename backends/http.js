@@ -1,5 +1,6 @@
 const frappe = require('frappejs');
 const Observable = require('frappejs/utils/observable');
+const triggerEvent = name => frappe.events.trigger(`http:${name}`);
 
 module.exports = class HTTPClient extends Observable {
   constructor({ server, protocol = 'http' }) {
@@ -105,15 +106,23 @@ module.exports = class HTTPClient extends Observable {
   }
 
   async fetch(url, args) {
+    triggerEvent('ajaxStart');
+
     args.headers = this.getHeaders();
     let response = await frappe.fetch(url, args);
-    let data = await response.json();
 
-    if (response.status !== 200) {
-      throw Error(data.error);
+    triggerEvent('ajaxStop');
+
+    if (response.status === 200) {
+      let data = await response.json();
+      return data;
     }
 
-    return data;
+    if (response.status === 401) {
+      triggerEvent('unauthorized');
+    }
+
+    throw Error(await response.text());
   }
 
   getFilesToUpload(doc) {

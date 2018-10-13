@@ -166,6 +166,9 @@ async updateList(query = null) {
             console.log("XSX");
             location.reload();
             }
+        },
+        {
+          footerComponent: "xyz"
         }
       );
       value.on('afterInsert', data => {
@@ -180,8 +183,9 @@ async updateList(query = null) {
 </script>
 
 <style>
-/* @import '~fullcalendar/dist/fullcalendar.css'; */
-@import 'added.css';
+@import '~fullcalendar/dist/fullcalendar.css';
+/* @import 'added.css'; */
+@import 'modified.css';
 #calendarFull {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

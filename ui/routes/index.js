@@ -1,6 +1,7 @@
 import ListAndForm from '../pages/ListAndForm';
 import ListAndPrintView from '../pages/ListAndPrintView';
 import Calendar from '../pages/Calendar';
+import Tree from '../components/Tree';
 
 export default [
   {
@@ -19,6 +20,12 @@ export default [
     path: '/edit/:doctype/:name',
     name: 'Form',
     component: ListAndForm,
+    props: true
+  },
+  {
+    path: '/tree/:doctype',
+    name: 'Tree',
+    component: Tree,
     props: true
   },
   {

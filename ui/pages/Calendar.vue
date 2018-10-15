@@ -184,7 +184,6 @@ async updateList(query = null) {
 
 <style>
 @import '~fullcalendar/dist/fullcalendar.css';
-/* @import 'added.css'; */
 @import 'modified.css';
 #calendarFull {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;

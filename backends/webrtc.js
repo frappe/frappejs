@@ -12,7 +12,7 @@ module.exports = class WebRTCClient extends Database {
       method: 'insert',
       payload: [doctype, doc]
     };
-    return await frappe.webRTC.sendRequest(obj);
+    return await frappe.webrtc.sendRequest(obj);
   }
 
   async get(doctype, name) {
@@ -20,7 +20,7 @@ module.exports = class WebRTCClient extends Database {
       method: 'get',
       payload: [doctype, name]
     };
-    return await frappe.webRTC.sendRequest(obj);
+    return await frappe.webrtc.sendRequest(obj);
   } 
 
   async getAll({ doctype, fields, filters, start, limit, sort_by, order }) {
@@ -28,7 +28,7 @@ module.exports = class WebRTCClient extends Database {
       method: 'getAll',
       payload: [{ doctype, fields, filters, start, limit, sort_by, order }]
     };
-    return await frappe.webRTC.sendRequest(obj);
+    return await frappe.webrtc.sendRequest(obj);
   }
 
   async update(doctype, doc) {
@@ -36,7 +36,7 @@ module.exports = class WebRTCClient extends Database {
       method: 'update',
       payload: [doctype, doc]
     };
-    return await frappe.webRTC.sendRequest(obj);
+    return await frappe.webrtc.sendRequest(obj);
   }
 
   async delete(doctype, name) {
@@ -44,7 +44,7 @@ module.exports = class WebRTCClient extends Database {
       method: 'delete',
       payload: [doctype, name]
     };
-    return await frappe.webRTC.sendRequest(obj);
+    return await frappe.webrtc.sendRequest(obj);
   }
 
   async deleteMany(doctype, names) {
@@ -52,7 +52,7 @@ module.exports = class WebRTCClient extends Database {
       method: 'deleteMany',
       payload: [doctype, names]
     };
-    return await frappe.webRTC.sendRequest(obj);
+    return await frappe.webrtc.sendRequest(obj);
   }
 
   async exists(doctype, name) {
@@ -60,7 +60,7 @@ module.exports = class WebRTCClient extends Database {
       method: 'exists',
       payload: [doctype, name]
     };
-    return (await frappe.webRTC.sendRequest(obj)) ? true : false;
+    return (await frappe.webrtc.sendRequest(obj)) ? true : false;
   }
 
   async getValue(doctype, name, fieldname) {
@@ -68,7 +68,7 @@ module.exports = class WebRTCClient extends Database {
       method: 'getValue',
       payload: [doctype, name, fieldname]
     };
-    return await frappe.webRTC.sendRequest(obj);
+    return await frappe.webrtc.sendRequest(obj);
   }
 
   initTypeMap() {

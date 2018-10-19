@@ -1,6 +1,6 @@
 const utils = require('frappejs/utils');
 const frappe = require('frappejs');
-const turnConfig = require('./turn.config');
+const turnConfig = require('./turn.config.json');
 
 module.exports = class WebRTC {
     constructor(socket) {
@@ -10,20 +10,7 @@ module.exports = class WebRTC {
         this.masterNode;
         this.uniqueId;
         this.socket = socket;
-        this.iceServers = {
-            'iceServers': [{
-                    'url': 'stun:stun.services.mozilla.com'
-                }, 
-                {
-                    'url': 'stun:stun.l.google.com:19302'
-                }, 
-                {
-                    url: turnConfig.url, 
-                    username: turnConfig.username, 
-                    credential: turnConfig.password
-                }
-            ]
-        };
+        this.iceServers = turnConfig;
         this.connectionHandlers();
     }
 

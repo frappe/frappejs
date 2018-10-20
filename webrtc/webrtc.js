@@ -1,50 +1,71 @@
 const utils = require('frappejs/utils');
 const frappe = require('frappejs');
+const io = require('socket.io-client');
 const turnConfig = require('./turn.config.json');
 
 module.exports = class WebRTC {
-    constructor(socket) {
+    constructor(url) {
         this.dataChannels = {};
         this.connections = {};
         this.pendingRequests = {};
         this.masterNode;
         this.uniqueId;
-        this.socket = socket;
+        this.socket = io.connect(url);
         this.iceServers = turnConfig;
         this.connectionHandlers();
     }
 
     startServer(name) {
-        frappe.getSingle('ServerSettings').then(serverSettings => {
-            let key = undefined;
-            if (serverSettings != undefined) {
-                key = serverSettings.serverKey
+        return new Promise((resolve, reject) => {
+            frappe.getSingle('ServerSettings').then(serverSettings => {
+                let key = undefined;
+                if (serverSettings != undefined) {
+                    key = serverSettings.serverKey
+                }
+                this.socket.emit('startServer', { name:name, key:key, socketID:this.uniqueId });
+            });
+            this.onServerResponse = status => {
+                resolve(status);
             }
-            this.socket.emit('startServer', { name:name, key:key, socketID:this.uniqueId });
         });
     }
 
     stopServer(name) {
-        frappe.getSingle('ServerSettings').then(serverSettings => {
-            let key = undefined;
-            if (serverSettings != undefined) {
-                key = serverSettings.serverKey
+        return new Promise((resolve, reject) => {
+            frappe.getSingle('ServerSettings').then(serverSettings => {
+                let key = undefined;
+                if (serverSettings != undefined) {
+                    key = serverSettings.serverKey
+                }
+                this.socket.emit('stopServer', { name:name, key:key, socketID:this.uniqueId });
+            });
+            this.onServerResponse = status => {
+                resolve(status);
             }
-            this.socket.emit('stopServer', { name:name, key:key, socketID:this.uniqueId });
         });
     }
 
     startConnection(masterName) {
-        this.socket.emit('create', masterName);
+        return new Promise((resolve, reject) => {
+            this.socket.emit('create', masterName);
+            this.onConnectionResponse = status => {
+                resolve(status);
+            };
+        }); 
     }
 
     stopConnection() {
-        var stop = JSON.stringify({
-            type: 'stop', 
-            id: this.uniqueId
+        return new Promise((resolve, reject) => {
+            var stop = JSON.stringify({
+                type: 'stop', 
+                id: this.uniqueId
+            });
+            this.sendData(stop, this.masterNode);
+            this.removeConnection(this.masterNode);
+            this.onConnectionResponse = status => {
+                resolve(status);
+            };
         });
-        this.sendData(stop, this.masterNode);
-        this.removeConnection(this.masterNode);
     }
 
     changeHandler() {
@@ -55,14 +76,10 @@ module.exports = class WebRTC {
 
     connectionStarted() {
         this.changeHandler();
-        localStorage.serverStatus = 'on';
-        if (typeof this.onServerResponse === 'function') {
-            this.onServerResponse('on');
-        }
+        this.onServerResponse('on');
     }
 
     connectionStopped() {
-        localStorage.serverStatus = 'off';
         var stop = JSON.stringify({
             type: 'stop', 
             id: this.uniqueId
@@ -73,23 +90,17 @@ module.exports = class WebRTC {
                 this.removeConnection(clientID);
             }
         }
-        if (typeof this.onServerResponse === 'function') {
-            this.onServerResponse('off');
-        }
+        this.onServerResponse('off');
     }
 
     serverExists() {
         frappe.throw('The server name already exists.');
-        if (typeof this.onServerResponse === 'function') {
-            this.onServerResponse('exists');
-        }
+        this.onServerResponse('exists');
     }
 
     incorrectCredential() {
         frappe.throw('You are not authorized to perform this action.', 'ValidationError');
-        if (typeof this.onServerResponse === 'function') {
-            this.onServerResponse('incorrect');
-        }
+        this.onServerResponse('incorrect');
     }
 
     newConnection() {
@@ -100,10 +111,7 @@ module.exports = class WebRTC {
         });
         settings.insert().then(doc => {
             this.changeHandler();
-            localStorage.serverStatus = 'on';
-            if (typeof this.onServerResponse === 'function') {
-                this.onServerResponse('new');
-            }
+            this.onServerResponse('new');
         });
     }
 
@@ -224,19 +232,13 @@ module.exports = class WebRTC {
         this.dataChannels[id] = this.connections[id].createDataChannel("myDataChannel");
         this.dataChannels[id].onerror = function (error) {
             frappe.throw(error);
-            if (typeof that.onConnectionResponse === 'function') {
-                that.onConnectionResponse(false);
-            }
+            that.onConnectionResponse(false);
         };
         this.dataChannels[id].onopen = function () {
-            if (typeof that.onConnectionResponse === 'function') {
-                that.onConnectionResponse(true);
-            }
+            that.onConnectionResponse(true);
         };
         this.dataChannels[id].onclose = function () {
-            if (typeof that.onConnectionResponse === 'function') {
-                that.onConnectionResponse(false);
-            }
+            that.onConnectionResponse(false);
         };
         this.setupReceiver(id);
     }
@@ -254,14 +256,10 @@ module.exports = class WebRTC {
                     this.verifyClient(message.email, message.password, message.clientID);
                 } else if (message.type === 'authRes') {
                     if (message.allow) {
-                        if (typeof this.onAccessResponse === 'function') {
-                            this.onAccessResponse(true);
-                        }
+                        this.onAccessResponse(true);
                     } else {
                         frappe.throw('You are not authorized to connect with this server.', 'ValidationError');
-                        if (typeof this.onAccessResponse === 'function') {
-                            this.onAccessResponse(false);
-                        }
+                        this.onAccessResponse(false);
                     }
                 } else if (message.type == 'stop') {
                     this.removeConnection(message.id);
@@ -284,13 +282,18 @@ module.exports = class WebRTC {
     }
 
     requestAccess(email, password) {
-        var payload = JSON.stringify({
-            type: 'authReq', 
-            email: email, 
-            password: password, 
-            clientID: this.uniqueId
+        return new Promise((resolve, reject) => {
+            var payload = JSON.stringify({
+                type: 'authReq', 
+                email: email, 
+                password: password, 
+                clientID: this.uniqueId
+            });
+            this.sendData(payload);
+            this.onAccessResponse = status => {
+                resolve(status);
+            }
         });
-        this.sendData(payload);
     }
 
     verifyClient(email, password, clientID) {

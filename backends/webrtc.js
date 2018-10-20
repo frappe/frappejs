@@ -1,10 +1,24 @@
 const frappe = require('frappejs');
 const Database = require('frappejs/backends/database');
+const Webrtc = require('frappejs/webrtc/webrtc');
 
-module.exports = class WebRTCClient extends Database {
-  constructor() {
+module.exports = class WebrtcClient extends Database {
+  constructor(url) {
     super();
+    this.webrtc = new Webrtc(url);
     this.initTypeMap();
+  }
+
+  async connect(masterName) {
+    return await this.webrtc.startConnection(masterName);
+  }
+
+  async disconnect() {
+    return await this.webrtc.stopConnection();
+  }
+
+  async login(email, password) {
+    return await this.webrtc.requestAccess(email, password);
   }
 
   async insert(doctype, doc) {
@@ -12,7 +26,7 @@ module.exports = class WebRTCClient extends Database {
       method: 'insert',
       payload: [doctype, doc]
     };
-    return await frappe.webrtc.sendRequest(obj);
+    return await this.webrtc.sendRequest(obj);
   }
 
   async get(doctype, name) {
@@ -20,7 +34,7 @@ module.exports = class WebRTCClient extends Database {
       method: 'get',
       payload: [doctype, name]
     };
-    return await frappe.webrtc.sendRequest(obj);
+    return await this.webrtc.sendRequest(obj);
   } 
 
   async getAll({ doctype, fields, filters, start, limit, sort_by, order }) {
@@ -28,7 +42,7 @@ module.exports = class WebRTCClient extends Database {
       method: 'getAll',
       payload: [{ doctype, fields, filters, start, limit, sort_by, order }]
     };
-    return await frappe.webrtc.sendRequest(obj);
+    return await this.webrtc.sendRequest(obj);
   }
 
   async update(doctype, doc) {
@@ -36,7 +50,7 @@ module.exports = class WebRTCClient extends Database {
       method: 'update',
       payload: [doctype, doc]
     };
-    return await frappe.webrtc.sendRequest(obj);
+    return await this.webrtc.sendRequest(obj);
   }
 
   async delete(doctype, name) {
@@ -44,7 +58,7 @@ module.exports = class WebRTCClient extends Database {
       method: 'delete',
       payload: [doctype, name]
     };
-    return await frappe.webrtc.sendRequest(obj);
+    return await this.webrtc.sendRequest(obj);
   }
 
   async deleteMany(doctype, names) {
@@ -52,7 +66,7 @@ module.exports = class WebRTCClient extends Database {
       method: 'deleteMany',
       payload: [doctype, names]
     };
-    return await frappe.webrtc.sendRequest(obj);
+    return await this.webrtc.sendRequest(obj);
   }
 
   async exists(doctype, name) {
@@ -60,7 +74,7 @@ module.exports = class WebRTCClient extends Database {
       method: 'exists',
       payload: [doctype, name]
     };
-    return (await frappe.webrtc.sendRequest(obj)) ? true : false;
+    return (await this.webrtc.sendRequest(obj)) ? true : false;
   }
 
   async getValue(doctype, name, fieldname) {
@@ -68,7 +82,7 @@ module.exports = class WebRTCClient extends Database {
       method: 'getValue',
       payload: [doctype, name, fieldname]
     };
-    return await frappe.webrtc.sendRequest(obj);
+    return await this.webrtc.sendRequest(obj);
   }
 
   initTypeMap() {

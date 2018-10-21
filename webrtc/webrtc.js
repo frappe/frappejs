@@ -30,12 +30,14 @@ module.exports = class WebRTC {
         });
     }
 
-    stopServer(name) {
+    stopServer() {
         return new Promise((resolve, reject) => {
             frappe.getSingle('ServerSettings').then(serverSettings => {
                 let key = undefined;
+                let name = undefined;
                 if (serverSettings != undefined) {
-                    key = serverSettings.serverKey
+                    name = serverSettings.serverName;
+                    key = serverSettings.serverKey;
                 }
                 this.socket.emit('stopServer', { name:name, key:key, socketID:this.uniqueId });
             });
@@ -76,7 +78,7 @@ module.exports = class WebRTC {
 
     connectionStarted() {
         this.changeHandler();
-        this.onServerResponse('on');
+        this.onServerResponse('started');
     }
 
     connectionStopped() {
@@ -90,7 +92,7 @@ module.exports = class WebRTC {
                 this.removeConnection(clientID);
             }
         }
-        this.onServerResponse('off');
+        this.onServerResponse('stopped');
     }
 
     serverExists() {
@@ -111,7 +113,7 @@ module.exports = class WebRTC {
         });
         settings.insert().then(doc => {
             this.changeHandler();
-            this.onServerResponse('new');
+            this.onServerResponse('registered');
         });
     }
 
@@ -126,7 +128,7 @@ module.exports = class WebRTC {
                 that.serverExists();
             } else if (event.res == 'incorrect') {
                 that.incorrectCredential();
-            } else if (event.res == 'new') {
+            } else if (event.res == 'registered') {
                 that.newConnection();
             }
         });
@@ -145,7 +147,7 @@ module.exports = class WebRTC {
 
         this.socket.on('created', function(creatorID) {
             if (creatorID == 'fail') {
-                that.onConnectionResponse('fail');
+                that.onConnectionResponse(false);
                 frappe.throw('The server is not live or does not exist.');
             } else {
                 that.setupConnection(creatorID);

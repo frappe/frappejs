@@ -147,7 +147,9 @@ module.exports = class WebRTC {
 
         this.socket.on('created', function(creatorID) {
             if (creatorID == 'fail') {
-                that.onConnectionResponse(false);
+                if(typeof that.onConnectionResponse === "function") {
+                    that.onConnectionResponse(false);
+                }
                 frappe.throw('The server is not live or does not exist.');
             } else {
                 that.setupConnection(creatorID);
@@ -234,14 +236,17 @@ module.exports = class WebRTC {
         this.dataChannels[id] = this.connections[id].createDataChannel("myDataChannel");
         this.dataChannels[id].onerror = function (error) {
             frappe.throw(error);
-            that.onConnectionResponse(false);
-        };
+            if(typeof that.onConnectionResponse === "function") {
+                that.onConnectionResponse(false);
+            }        };
         this.dataChannels[id].onopen = function () {
-            that.onConnectionResponse(true);
-        };
+            if(typeof that.onConnectionResponse === "function") {
+                that.onConnectionResponse(true);
+            }        };
         this.dataChannels[id].onclose = function () {
-            that.onConnectionResponse(false);
-        };
+            if(typeof that.onConnectionResponse === "function") {
+                that.onConnectionResponse(false);
+            }        };
         this.setupReceiver(id);
     }
 
@@ -258,11 +263,14 @@ module.exports = class WebRTC {
                     this.verifyClient(message.email, message.password, message.clientID);
                 } else if (message.type === 'authRes') {
                     if (message.allow) {
-                        this.onAccessResponse(true);
+                        if(typeof this.onAccessResponse === "function") {
+                            this.onAccessResponse(true);
+                        }
                     } else {
                         frappe.throw('You are not authorized to connect with this server.', 'ValidationError');
-                        this.onAccessResponse(false);
-                    }
+                        if(typeof this.onAccessResponse === "function") {
+                            this.onAccessResponse(false);
+                        }                    }
                 } else if (message.type == 'stop') {
                     this.removeConnection(message.id);
                 } else if (message.type === 'request') {

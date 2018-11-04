@@ -1,6 +1,9 @@
 import ListAndForm from '../pages/ListAndForm';
 import ListAndPrintView from '../pages/ListAndPrintView';
 import Tree from '../components/Tree';
+import KanbanTable from '../components/Kanban/KanbanTable';
+import KanbanDetails from '../components/Kanban/KanbanDetails';
+import Kanban from '../components/Kanban/Kanban';
 
 export default [
   {
@@ -26,5 +29,20 @@ export default [
     name: 'PrintView',
     component: ListAndPrintView,
     props: true
+  },
+  {
+    path: '/kanban',
+    name: 'Kanban',
+    component: KanbanTable
+  },
+  {
+    path: '/kanban/:name',
+    name: 'Edit Kanban',
+    component: KanbanDetails
+  },
+  {
+    path: '/kanban/view/:name',
+    name: 'Show Kanban',
+    component: Kanban
   }
 ];

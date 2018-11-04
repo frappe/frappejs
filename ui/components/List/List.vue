@@ -1,44 +1,38 @@
 <template>
-        <div class="frappe-list">
-            <list-actions
-              :doctype="doctype"
-              :showDelete="checkList.length"
-              @new="$emit('newDoc')"
-              @delete="deleteCheckedItems"
-            />
-            <ul class="list-group">
-                <list-item v-for="doc of data" :key="doc.name"
-                    :id="doc.name"
-                    :isActive="doc.name === $route.params.name"
-                    :isChecked="isChecked(doc.name)"
-                    @clickItem="openForm(doc.name)"
-                    @checkItem="toggleCheck(doc.name)"
-                >
-                    <indicator v-if="hasIndicator" :color="getIndicatorColor(doc)" />
-                    <span class="d-inline-block ml-2">
-                        {{ doc[meta.titleField || 'name'] }}
-                    </span>
-                </list-item>
-            </ul>
-        </div>
+  <div class="frappe-list">
+    <list-actions :doctype="doctype" :showDelete="checkList.length" @new="$emit('newDoc')" :showCreateKanban="hasItems" @delete="deleteCheckedItems" @createKanban="createKanban" />
+    <ul class="list-group">
+      <list-item v-for="doc of data" :key="doc.name" :id="doc.name" :isActive="doc.name === $route.params.name" :isChecked="isChecked(doc.name)" @clickItem="openForm(doc.name)" @checkItem="toggleCheck(doc.name)">
+        <indicator v-if="hasIndicator" :color="getIndicatorColor(doc)" />
+        <span class="d-inline-block ml-2">
+          {{ doc[meta.titleField || 'name'] }}
+        </span>
+      </list-item>
+    </ul>
+    <create-kanban-modal :showCreateKanbanModal="showCreateKanbanModal" :refdoctype="doctype" />
+  </div>
 </template>
 <script>
 import frappe from 'frappejs';
 import ListActions from './ListActions';
 import ListItem from './ListItem';
+import KanbanModel from '../../../models/doctype/Kanban/Kanban';
+import CreateKanbanModal from '../Kanban/CreateKanbanModal';
 
 export default {
   name: 'List',
   props: ['doctype'],
   components: {
     ListActions,
-    ListItem
+    ListItem,
+    CreateKanbanModal
   },
   data() {
     return {
       data: [],
       checkList: [],
-      activeItem: ''
+      activeItem: '',
+      showCreateKanbanModal: false
     };
   },
   computed: {
@@ -47,6 +41,14 @@ export default {
     },
     hasIndicator() {
       return Boolean(this.meta.indicators);
+    },
+    hasItems() {
+      const fields = this.meta.fields;
+      const isSelectFieldPresent = fields.find(
+        field => field.fieldtype === 'Select'
+      );
+      if (isSelectFieldPresent && this.data.length > 0) return true;
+      else return false;
     }
   },
   created() {
@@ -108,6 +110,10 @@ export default {
     },
     getIndicatorColor(doc) {
       return this.meta.getIndicatorColor(doc);
+    },
+    createKanban() {
+      console.log('creating kanban');
+      this.showCreateKanbanModal = true;
     }
   }
 };

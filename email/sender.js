@@ -5,10 +5,9 @@ const validator = require('./validator');
 module.exports = {
   'sendMail': async function (mailDetails) {
     if (!validator.validate(mailDetails.fromEmailAddress)) {
-      console.log("invalid from email");
+      console.log("INVALID EMAIL");
       return false;
     }
-    //console.log(mailDetails);
 
     let account = await getConfig();
     for (var i = 0; i < account.length; i++) {
@@ -17,14 +16,15 @@ module.exports = {
           mailDetails = {
             from: mailDetails.fromEmailAddress,
             to: mailDetails.toEmailAddress,
-            replyTo:mailDetails.toEmailAddress,
-            inReplyTo:mailDetails.replyId,
-            references:[mailDetails.replyId],
+            replyTo: mailDetails.toEmailAddress,
+            inReplyTo: mailDetails.replyId,
+            references: [mailDetails.replyId],
             cc: mailDetails.ccEmailAddress,
             bcc: mailDetails.bccEmailAddress,
             subject: mailDetails.subject,
             text: mailDetails.bodyText,
-            //html:"",
+            read: "Seen",
+            sent: 1,
           };
           let transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -41,7 +41,5 @@ module.exports = {
         }
       }
     }
-    return false;
-    console.log(mailDetails.fromEmailAddress + " NOT FOUND IN RECORDS");
   }
 };

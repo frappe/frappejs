@@ -33,7 +33,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "../../styles/variables";
+@import '../../styles/variables';
 
 .frappe-print-actions {
     background-color: $white;

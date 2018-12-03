@@ -16,6 +16,7 @@ const fs = require('fs');
 const { setupExpressRoute: setRouteForPDF } = require('frappejs/server/pdf');
 const auth = require('./../auth/auth')();
 const morgan = require('morgan');
+const setupEmail = require('../email');
 const { addWebpackMiddleware } = require('../webpack/serve');
 const { getAppConfig, resolveAppDir } = require('../webpack/utils');
 const { thumbnailMiddleware } = require('./utils');
@@ -77,6 +78,7 @@ module.exports = {
         frappe.server = server;
 
         setRouteForPDF();
+        setupEmail();
     },
 
     async init() {

@@ -8,10 +8,10 @@ export default {
       popupOpen: false,
       popupItems: [],
       highlightedItem: -1
-    }
+    };
   },
   render(h) {
-      return this.getWrapperElement(h);
+    return this.getWrapperElement(h);
   },
   watch: {
     // prop change does not change the value of input
@@ -50,7 +50,7 @@ export default {
             this.popupOpen = false;
           }, 200);
         }
-      }
+      };
     },
     highlightBelowItem() {
       this.highlightedItem += 1;
@@ -76,15 +76,22 @@ export default {
       ];
     },
     getDropdownElement(h) {
-      return h('div', {
-        class: ['dropdown-menu w-100', this.popupOpen ? 'show' : ''],
-        ref: 'dropdown-menu'
-      }, this.getDropdownItems(h));
+      return h(
+        'div',
+        {
+          class: ['dropdown-menu w-100', this.popupOpen ? 'show' : ''],
+          ref: 'dropdown-menu'
+        },
+        this.getDropdownItems(h)
+      );
     },
     getDropdownItems(h) {
       return this.popupItems.map((item, i) => {
         return h('a', {
-          class: ['dropdown-item', this.highlightedItem === i ? 'active text-dark' : ''],
+          class: [
+            'dropdown-item',
+            this.highlightedItem === i ? 'active text-dark' : ''
+          ],
           attrs: {
             href: '#',
             'data-value': item.value
@@ -100,7 +107,7 @@ export default {
           domProps: {
             innerHTML: item.label
           }
-        })
+        });
       });
     },
     onItemClick(item) {
@@ -114,20 +121,20 @@ export default {
       this.popupItems = await this.getList(keyword);
       this.popupOpen = this.popupItems.length > 0;
     },
-    async getList(text='') {
+    async getList(text = '') {
       let list = await this.docfield.getList(text);
       list = list.map(item => {
         if (typeof item === 'string') {
           return {
             label: item,
             value: item
-          }
+          };
         }
         return item;
       });
 
       return list.filter(item => {
-        const string = (item.label + ' ' +  item.value).toLowerCase();
+        const string = (item.label + ' ' + item.value).toLowerCase();
         return string.includes(text.toLowerCase());
       });
     }
@@ -135,7 +142,7 @@ export default {
 };
 </script>
 <style>
-.form-group[data-fieldtype="Link"] .dropdown-menu {
+.form-group[data-fieldtype='Link'] .dropdown-menu {
   max-height: 200px;
   overflow: auto;
 }

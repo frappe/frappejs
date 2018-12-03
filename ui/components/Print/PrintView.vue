@@ -48,7 +48,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "../../styles/variables";
+@import '../../styles/variables';
 
 .print-container {
   padding: 1rem 5rem;

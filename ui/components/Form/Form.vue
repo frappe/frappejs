@@ -40,7 +40,8 @@ export default {
       notFound: false,
       invalid: false,
       invalidFields: [],
-      links: []
+      links: [],
+      doc: {}
     };
   },
   computed: {

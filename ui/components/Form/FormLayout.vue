@@ -58,9 +58,9 @@ export default {
         return false;
       }
 
-      if (fieldname === 'name' && !this.doc.isNew()) {
-        return false;
-      }
+      // if (fieldname === 'name' && !this.doc.isNew()) {
+      //   return false;
+      // }
 
       return true;
     },

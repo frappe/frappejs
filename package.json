@@ -57,6 +57,7 @@
     "sqlite3": "^4.0.2",
     "vue": "^2.5.16",
     "vue-flatpickr-component": "^7.0.4",
+    "vue-full-calendar": "^2.6.1",
     "vue-loader": "^15.2.6",
     "vue-router": "^3.0.1",
     "vue-template-compiler": "^2.5.16",

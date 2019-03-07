@@ -22,7 +22,7 @@ export default {
   computed: {
     showSearch() {
       // TODO: Make this configurable
-      return /list|edit/.test(this.$route.path)
+      return /list|edit|calendar/.test(this.$route.path)
     }
   },
   mounted() {

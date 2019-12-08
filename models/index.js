@@ -9,6 +9,7 @@ module.exports = {
         Session: require('./doctype/Session/Session.js'),
         SingleValue: require('./doctype/SingleValue/SingleValue.js'),
         SystemSettings: require('./doctype/SystemSettings/SystemSettings.js'),
+        ServerSettings: require('./doctype/ServerSettings/ServerSettings.js'),
         ToDo: require('./doctype/ToDo/ToDo.js'),
         User: require('./doctype/User/User.js'),
         UserRole: require('./doctype/UserRole/UserRole.js'),

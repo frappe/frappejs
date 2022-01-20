@@ -25,7 +25,7 @@
 import frappe from 'frappejs';
 import FormLayout from './FormLayout';
 import FormActions from './FormActions';
-import { _ } from 'frappejs/utils';
+import { t } from 'frappejs/utils';
 
 export default {
   name: 'Form',

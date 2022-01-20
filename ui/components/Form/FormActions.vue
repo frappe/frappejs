@@ -7,13 +7,13 @@
         v-if="showSave"
         :disabled="disableSave"
         @click="$emit('save')"
-      >{{ _('Save') }}</f-button>
-      <f-button primary v-if="showSubmit" @click="$emit('submit')">{{ _('Submit') }}</f-button>
-      <f-button secondary v-if="showRevert" @click="$emit('revert')">{{ _('Revert') }}</f-button>
+      >{{ t('Save') }}</f-button>
+      <f-button primary v-if="showSubmit" @click="$emit('submit')">{{ t('Submit') }}</f-button>
+      <f-button secondary v-if="showRevert" @click="$emit('revert')">{{ t('Revert') }}</f-button>
       <div class="ml-2" v-if="showPrint">
-        <f-button secondary v-if="showNextAction" @click="$emit('print')">{{ _('Print') }}</f-button>
+        <f-button secondary v-if="showNextAction" @click="$emit('print')">{{ t('Print') }}</f-button>
       </div>
-      <dropdown class="ml-2" v-if="showNextAction" :label="_('Actions')" :options="links"></dropdown>
+      <dropdown class="ml-2" v-if="showNextAction" :label="t('Actions')" :options="links"></dropdown>
     </div>
   </div>
 </template>
@@ -98,7 +98,7 @@ export default {
       const _ = this._;
 
       if (this.doc.isNew()) {
-        return _('New {0}', this.getFormTitle());
+        return t('New {0}', this.getFormTitle());
       }
 
       const titleField = this.meta.titleField || 'name';

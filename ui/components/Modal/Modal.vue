@@ -13,7 +13,7 @@
           <component ref="modalComponent" :is="component" v-bind="props" v-on="events"/>
         </div>
         <div class="modal-footer" v-if="!noFooter">
-          <!-- <f-button secondary @click="closeModal">{{ _('Close') }}</f-button> -->
+          <!-- <f-button secondary @click="closeModal">{{ t('Close') }}</f-button> -->
           <f-button primary v-if="primaryAction" @click="onPrimaryAction">{{ primaryAction.label }}</f-button>
         </div>
       </div>

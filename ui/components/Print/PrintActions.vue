@@ -3,8 +3,8 @@
     <h5 class="m-0">Print {{ title }}</h5>
 
     <div class="button-group">
-      <f-button secondary @click="$emit('view-form')">{{ _('View Form') }}</f-button>
-      <f-button primary @click="$emit('pdf')">{{ _('PDF') }}</f-button>
+      <f-button secondary @click="$emit('view-form')">{{ t('View Form') }}</f-button>
+      <f-button primary @click="$emit('pdf')">{{ t('PDF') }}</f-button>
     </div>
 
   </div>

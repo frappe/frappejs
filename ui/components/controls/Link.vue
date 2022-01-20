@@ -4,7 +4,7 @@ import feather from 'feather-icons';
 import Autocomplete from './Autocomplete';
 import FeatherIcon from 'frappejs/ui/components/FeatherIcon';
 import Form from '../Form/Form';
-import { _ } from 'frappejs/utils';
+import { t } from 'frappejs/utils';
 
 export default {
   extends: Autocomplete,

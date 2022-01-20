@@ -6,7 +6,7 @@
 				@input="updateSearch"
 				name="search"
 				class="form-control shadow-none w-100"
-				:placeholder="_('Search...')">
+				:placeholder="t('Search...')">
 		</form>
 		<div class="navbar-text">&nbsp;</div>
 	</nav>

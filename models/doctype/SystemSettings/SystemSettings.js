@@ -1,5 +1,5 @@
 const { DateTime } = require('luxon');
-const { _ } = require('frappejs/utils');
+const { t } = require('frappejs/utils');
 const {
   DEFAULT_DISPLAY_PRECISION,
   DEFAULT_INTERNAL_PRECISION,
@@ -42,14 +42,14 @@ module.exports = {
       options: dateFormatOptions,
       default: 'MMM d, y',
       required: 1,
-      description: _('Sets the app-wide date display format.'),
+      description: t('Sets the app-wide date display format.'),
     },
     {
       fieldname: 'locale',
       label: 'Locale',
       fieldtype: 'Data',
       default: DEFAULT_LOCALE,
-      description: _('Set the local code, this is used for number formatting.'),
+      description: t('Set the local code, this is used for number formatting.'),
     },
     {
       fieldname: 'displayPrecision',
@@ -64,10 +64,10 @@ module.exports = {
           return;
         }
         throw new frappe.errors.ValidationError(
-          _('Display Precision should have a value between 0 and 9.')
+          t('Display Precision should have a value between 0 and 9.')
         );
       },
-      description: _('Sets how many digits are shown after the decimal point.'),
+      description: t('Sets how many digits are shown after the decimal point.'),
     },
     {
       fieldname: 'internalPrecision',

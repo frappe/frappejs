@@ -5,7 +5,7 @@ export default {
   extends: Base,
   methods: {
     getWrapperElement(h) {
-      let fileName = this.docfield.placeholder || this._('Choose a file..');
+      let fileName = this.docfield.placeholder || this.t('Choose a file..');
       let filePath = null;
 
       if (this.value && typeof this.value === 'string') {
@@ -21,7 +21,7 @@ export default {
           target: '_blank'
         },
         domProps: {
-          textContent: this._('View File')
+          textContent: this.t('View File')
         }
       });
 

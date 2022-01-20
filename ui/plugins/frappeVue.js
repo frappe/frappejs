@@ -4,12 +4,12 @@
  */
 
 import frappe from 'frappejs';
-import NotFound from '../components/NotFound';
-import FeatherIcon from '../components/FeatherIcon';
-import FrappeControl from '../components/controls/FrappeControl';
 import Button from '../components/Button';
+import FrappeControl from '../components/controls/FrappeControl';
+import FeatherIcon from '../components/FeatherIcon';
 import Indicator from '../components/Indicator';
 import modalPlugin from '../components/Modal/plugin';
+import NotFound from '../components/NotFound';
 import formModalPlugin from '../plugins/formModal';
 import outsideClickDirective from './outsideClickDirective';
 
@@ -28,13 +28,13 @@ export default function installFrappePlugin(Vue) {
     computed: {
       frappe() {
         return frappe;
-      }
+      },
     },
     methods: {
       // global translation function in every component
-      _(...args) {
-        return frappe._(...args);
-      }
-    }
+      t(...args) {
+        return frappe.t(...args);
+      },
+    },
   });
 }
